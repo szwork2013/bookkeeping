@@ -20,14 +20,32 @@ const muiTheme = getMuiTheme({
 class App extends Component {
 
     render() {
-        const {consumptions, actions } = this.props
-        console.log(consumptions)
+        const { consumptions, actions } = this.props
+
+        // @TODO: data should come from the backend
+        const serverConsumptions = [
+            {
+                id: 1,
+                name: 'Rent payments',
+                sum: '34.000',
+                date: '19.02.2016'
+            },
+            {
+                id: 2,
+                name: 'New Laptop',
+                sum: '100.000',
+                date: '20.02.2016'
+            }
+        ]
+
+        const allConsumptions = serverConsumptions.concat(consumptions)
+
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <Paper>
                     <Header />
                     <ConsumptionAdd createConsumption={actions.createConsumption}/>
-                    <ConsumptionTable consumptions={consumptions}/>
+                    <ConsumptionTable consumptions={allConsumptions}/>
                 </Paper>
             </MuiThemeProvider>
         )

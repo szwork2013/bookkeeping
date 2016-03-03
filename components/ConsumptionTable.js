@@ -9,28 +9,6 @@ import TableFooter from 'material-ui/lib/table/table-footer';
 import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 
-// @TODO: data should come from the backend
-const data = [
-    {
-        id: 1,
-        name: 'Rent payments',
-        sum: '34.000',
-        date: '19.02.2016'
-    },
-    {
-        id: 2,
-        name: 'New Laptop',
-        sum: '100.000',
-        date: '20.02.2016'
-    },
-    {
-        id: 3,
-        name: 'Borsh',
-        status: '205.000',
-        date: '21.02.2016'
-    }
-];
-
 class ConsumptionTable extends Component {
 
     constructor(props) {
@@ -62,6 +40,7 @@ class ConsumptionTable extends Component {
 
 
     render() {
+        const { consumptions, actions } = this.props
         return (
             <Table
                 fixedHeader={this.state.fixedHeader}
@@ -85,7 +64,7 @@ class ConsumptionTable extends Component {
                     deselectOnClickaway={this.state.deselectOnClickaway}
                     showRowHover={this.state.showRowHover}
                     stripedRows={this.state.stripedRows}>
-                    {data.map((consumption, index) => (
+                    {consumptions.map((consumption, index) => (
                         <TableRow key={index} selected={false}>
                             <TableRowColumn>{consumption.id}</TableRowColumn>
                             <TableRowColumn>{consumption.name}</TableRowColumn>
