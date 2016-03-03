@@ -1,7 +1,7 @@
 import { CREATE_CONSUMPTION, UPDATE_CONSUMPTION, DELETE_CONSUMPTION } from '../constants/ActionTypes'
 
 export default function consumptions(state = [], action) {
-    console.log(action.type)
+    console.log(action)
     switch (action.type) {
         case CREATE_CONSUMPTION:
             return [
@@ -9,7 +9,7 @@ export default function consumptions(state = [], action) {
                     id: 999,//state.reduce((maxId, todo) => Math.max(todo.id, maxId), -1) + 1,
                     name: action.name,
                     sum: action.sum,
-                    date: '23.03.2016'
+                    date: action.date
                 },
                 ...state
             ]

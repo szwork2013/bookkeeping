@@ -18,24 +18,29 @@ class ConsumptionAdd extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {value: 1};
+        this.state = {category_id: 1};
     }
 
-    createConsumption(text) {
-        this.props.createConsumption(text)
+    createConsumption(event) {
+        this.props.createConsumption(this.state.category_id, this.state.sum)
+        this.setState({sum:sum})
     }
 
-    changeState(event, index, value) {
-        this.setState({value:value})
+    changeSum(event) {
+        this.setState({sum:event.target.value})
+    }
+
+    changeCategory(event, index, value) {
+        this.setState({category_id:value})
     }
 
     render() {
         return (
             <div style={{textAlign:'center'}}>
-                <SelectField value={this.state.value} style={{margin:20}} onChange={this.changeState.bind(this)}>
+                <SelectField value={this.state.category_id} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
                     {items}
                 </SelectField>
-                <TextField inputStyle={{textAlign:'center'}} style={{width:100}} value={'100.000'} hintText='Type in the sum of consumption' />
+                <TextField inputStyle={{textAlign:'center'}} onChange={this.changeSum.bind(this)} style={{width:100}} hintText='Sum' />
                 <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
                     <ContentAdd addConsumption />
                 </FloatingActionButton>
