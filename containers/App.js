@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
-import MainSection from '../components/MainSection'
-import * as TodoActions from '../actions'
+import * as actions from '../actions'
 import Paper from 'material-ui/lib/paper';
-import ConsumptionSelect from '../components/ConsumptionSelect'
+import ConsumptionAdd from '../components/ConsumptionAdd'
 import ConsumptionTable from '../components/ConsumptionTable'
 import {deepOrange500} from 'material-ui/lib/styles/colors';
 
@@ -21,16 +20,38 @@ const muiTheme = getMuiTheme({
 class App extends Component {
 
     render() {
+        const {consumptions, actions } = this.props
+        console.log(consumptions)
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <Paper>
                     <Header />
-                    <ConsumptionSelect />
-                    <ConsumptionTable/>
+                    <ConsumptionAdd createConsumption={actions.createConsumption}/>
+                    <ConsumptionTable consumptions={consumptions}/>
                 </Paper>
             </MuiThemeProvider>
         )
     }
 }
 
-export default App;
+App.propTypes = {
+    consumptions: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
+}
+
+function mapStateToProps(state) {
+    return {
+        consumptions: state.consumptions
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)

@@ -12,16 +12,19 @@ import Toggle from 'material-ui/lib/toggle';
 // @TODO: data should come from the backend
 const data = [
     {
+        id: 1,
         name: 'Rent payments',
         sum: '34.000',
         date: '19.02.2016'
     },
     {
+        id: 2,
         name: 'New Laptop',
         sum: '100.000',
         date: '20.02.2016'
     },
     {
+        id: 3,
         name: 'Borsh',
         status: '205.000',
         date: '21.02.2016'
@@ -71,7 +74,7 @@ class ConsumptionTable extends Component {
                             List of last Consumptions
                         </TableHeaderColumn>
                     </TableRow>
-                    <TableRow>
+                    <TableRow >
                         <TableHeaderColumn tooltip="The ID">ID</TableHeaderColumn>
                         <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
                         <TableHeaderColumn tooltip="The Sum">Sum</TableHeaderColumn>
@@ -82,12 +85,12 @@ class ConsumptionTable extends Component {
                     deselectOnClickaway={this.state.deselectOnClickaway}
                     showRowHover={this.state.showRowHover}
                     stripedRows={this.state.stripedRows}>
-                    {data.map((row, index) => (
-                        <TableRow key={index} selected={row.selected}>
-                            <TableRowColumn>{index}</TableRowColumn>
-                            <TableRowColumn>{row.name}</TableRowColumn>
-                            <TableRowColumn>{row.sum}</TableRowColumn>
-                            <TableRowColumn>{row.date}</TableRowColumn>
+                    {data.map((consumption, index) => (
+                        <TableRow key={index} selected={false}>
+                            <TableRowColumn>{consumption.id}</TableRowColumn>
+                            <TableRowColumn>{consumption.name}</TableRowColumn>
+                            <TableRowColumn>{consumption.sum}</TableRowColumn>
+                            <TableRowColumn>{consumption.date}</TableRowColumn>
                         </TableRow>
                     ))}
                 </TableBody>

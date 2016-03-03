@@ -3,6 +3,7 @@ import SelectField from 'material-ui/lib/select-field';
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
+import TextField from 'material-ui/lib/text-field';
 
 // @TODO: data should come from the backend
 const items = [
@@ -13,29 +14,39 @@ const items = [
     <MenuItem key={5} value={5} primaryText="Путешествия"/>
 ];
 
-class ConsumptionSelect extends Component {
+class ConsumptionAdd extends Component {
 
     constructor(props) {
         super(props);
         this.state = {value: 1};
     }
 
+    createConsumption(text) {
+        this.props.createConsumption(text)
+    }
+
+    changeState(event, index, value) {
+        this.setState({value:value})
+    }
 
     render() {
-        let self = this
         return (
             <div style={{textAlign:'center'}}>
-                <SelectField value={this.state.value} style={{margin:20}} onChange={function(event, index, value) {
-                    self.setState({value:value})
-                }}>
+                <SelectField value={this.state.value} style={{margin:20}} onChange={this.changeState.bind(this)}>
                     {items}
                 </SelectField>
-                <FloatingActionButton style={{marginLeft:20}} onClick={this.addConsumption}>
-                    <ContentAdd/>
+                <TextField inputStyle={{textAlign:'center'}} style={{width:100}} value={'100.000'} hintText='Type in the sum of consumption' />
+                <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
+                    <ContentAdd addConsumption />
                 </FloatingActionButton>
             </div>
         )
     }
 }
 
-export default ConsumptionSelect
+ConsumptionAdd.propTypes = {
+    createConsumption: PropTypes.func.isRequired
+}
+
+
+export default ConsumptionAdd
