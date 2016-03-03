@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
+import bookkeeping from './bookkeeping'
 
 const rootReducer = combineReducers({
-    todos
+    bookkeeping
 })
 
 export default rootReducer

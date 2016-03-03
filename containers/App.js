@@ -4,37 +4,33 @@ import { connect } from 'react-redux'
 import Header from '../components/Header'
 import MainSection from '../components/MainSection'
 import * as TodoActions from '../actions'
+import Paper from 'material-ui/lib/paper';
+import ConsumptionSelect from '../components/ConsumptionSelect'
+import ConsumptionTable from '../components/ConsumptionTable'
+import {deepOrange500} from 'material-ui/lib/styles/colors';
+
+import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+
+const muiTheme = getMuiTheme({
+    palette: {
+        accent1Color: deepOrange500
+    }
+});
 
 class App extends Component {
+
     render() {
-        const { todos, actions } = this.props
         return (
-            <div>
-                <Header addTodo={actions.addTodo} />
-                <MainSection todos={todos} actions={actions} />
-            </div>
+            <MuiThemeProvider muiTheme={muiTheme}>
+                <Paper>
+                    <Header />
+                    <ConsumptionSelect />
+                    <ConsumptionTable/>
+                </Paper>
+            </MuiThemeProvider>
         )
     }
 }
 
-App.propTypes = {
-    todos: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state) {
-    return {
-        todos: state.todos
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(TodoActions, dispatch)
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(App)
+export default App;

@@ -6,16 +6,14 @@ import App from './containers/App'
 
 import configureStore from './store/configureStore'
 
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
 
 const store = configureStore()
 
-const muiTheme = getMuiTheme();
+import RaisedButton from 'material-ui/lib/raised-button';
 
 render(
-    <Provider store={store} muiTheme={muiTheme}>
-        <App />
-    </Provider>,
+    <App store={store} />,
     document.getElementById('root')
 );
