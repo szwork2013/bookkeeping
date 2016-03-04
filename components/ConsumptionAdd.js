@@ -4,15 +4,15 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
+import $ from 'jquery'
 
 // @TODO: data should come from the backend
-const items = [
-    <MenuItem key={1} value={1} primaryText="Еда"/>,
-    <MenuItem key={2} value={2} primaryText="Спорт"/>,
-    <MenuItem key={3} value={3} primaryText="Квартира"/>,
-    <MenuItem key={4} value={4} primaryText="Машина"/>,
-    <MenuItem key={5} value={5} primaryText="Путешествия"/>
-];
+let categories = [];
+$.get('/categories', [], function(data) {
+    $.each(data, function(index, row) {
+        categories.push(<MenuItem key={row.id} value={row.id} primaryText={row.name}/>)
+    })
+});
 
 class ConsumptionAdd extends Component {
 
@@ -38,7 +38,7 @@ class ConsumptionAdd extends Component {
         return (
             <div style={{textAlign:'center'}}>
                 <SelectField value={this.state.category_id} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
-                    {items}
+                    {categories}
                 </SelectField>
                 <TextField inputStyle={{textAlign:'center'}} onChange={this.changeSum.bind(this)} style={{width:100}} hintText='Sum' />
                 <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
