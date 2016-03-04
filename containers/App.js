@@ -27,7 +27,7 @@ class App extends Component {
                 <Paper>
                     <Header />
                     <ConsumptionAdd createConsumption={actions.createConsumption}/>
-                    <ConsumptionTable consumptions={consumptions}/>
+                    <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
                 </Paper>
             </MuiThemeProvider>
         )
@@ -47,7 +47,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch),
+        actions: bindActionCreators(actions, dispatch)
     }
 }
 

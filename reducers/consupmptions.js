@@ -11,8 +11,6 @@ $.ajax({
     }
 });
 
-
-
 export default function consumptions(state = initialState, action) {
     switch (action.type) {
         case CREATE_CONSUMPTION:
@@ -40,11 +38,21 @@ export default function consumptions(state = initialState, action) {
             );
 
         case DELETE_CONSUMPTION:
-            return state.map(todo =>
-                todo.id === action.id ?
-                    Object.assign({}, todo, { text: action.text }) :
-                    todo
-            );
+            $.ajax({
+                url: '/consumptions',
+                type: 'DELETE',
+                async: false,
+                data: {
+                    id: action.consumption_id
+                },
+                success(data) {
+                    state = state.filter(consumption =>
+                        consumption.id !== action.consumption_id
+                    );
+                }
+            });
+
+            return state;
 
         default:
             return state

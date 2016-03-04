@@ -6,7 +6,6 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
 import $ from 'jquery';
 
-
 class ConsumptionAdd extends Component {
 
     constructor(props) {
@@ -27,7 +26,6 @@ class ConsumptionAdd extends Component {
                 })
             }
         });
-
 
         this.state = {sum: 100000, category_id: category_id, categories: categories}
     }

@@ -49,9 +49,7 @@ app.post("/consumptions", function(req, res) {
             }
             res.json(rows)
         });
-
     });
-
 });
 
 
@@ -64,6 +62,12 @@ app.get("/consumptions", function(req, res) {
             consumptions = rows
         }
         res.json(consumptions)
+    });
+});
+
+app.delete("/consumptions", function(req, res) {
+    db.run('DELETE FROM consumption WHERE id = ?', [req.body.id], function() {
+        res.json({status:true});
     });
 });
 

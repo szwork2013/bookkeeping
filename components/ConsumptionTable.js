@@ -9,7 +9,7 @@ import TableFooter from 'material-ui/lib/table/table-footer';
 import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 import Popover from 'material-ui/lib/popover/popover';
-import ConsumptionToolbar from './ConsumptionToolbar';
+import RaisedButton from 'material-ui/lib/raised-button';
 
 class ConsumptionTable extends Component {
 
@@ -27,7 +27,7 @@ class ConsumptionTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarConsumptionIndex: null
+            toolbarConsumptionId: null
         };
     }
 
@@ -35,9 +35,26 @@ class ConsumptionTable extends Component {
         this.setState({
             isToolbarOpen: true,
             toolbarAnchorEl: event.target,
-            toolbarConsumptionIndex: rowIndex
+            toolbarConsumptionId: this.props.consumptions[rowIndex].id
         });
     };
+
+    handleToolbarClose(event) {
+        this.setState({
+            isToolbarOpen: false,
+            toolbarConsumptionId: null
+        });
+    };
+
+    deleteConsumption() {
+        this.props.deleteConsumption(this.state.toolbarConsumptionId);
+        this.handleToolbarClose();
+    }
+
+    updateConsumption(event) {
+        this.props.updateConsumption(this.state.toolbarConsumptionId);
+        this.handleToolbarClose();
+    }
 
     render() {
         const { consumptions, actions } = this.props;
@@ -79,11 +96,14 @@ class ConsumptionTable extends Component {
                 </Table>
                 <Popover
                     useLayerForClickAway={false}
+                    onRequestClose={this.handleToolbarClose.bind(this)}
                     open={this.state.isToolbarOpen}
                     anchorEl={this.state.toolbarAnchorEl}
                     anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'left', vertical: 'top'}}>
-                    <ConsumptionToolbar consumptionIndex={this.state.toolbarConsumptionIndex}/>
+                    <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption.bind(this)} />
+                    <RaisedButton label="Delete" primary={true} style={{margin:12}} onClick={this.deleteConsumption.bind(this)}/>
+
                 </Popover>
             </div>
         )
