@@ -30,7 +30,8 @@
     "swig": "~1.4.2",
     "jquery": "~2.2.1",
     "react-xhr": "0.0.6",
-    "body-parser": "~1.15.0"
+    "body-parser": "~1.15.0",
+    "react-router": "~2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",

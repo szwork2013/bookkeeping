@@ -11,6 +11,8 @@ import {deepOrange500} from 'material-ui/lib/styles/colors';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 
+import { Router, Route, hashHistory } from 'react-router'
+
 const muiTheme = getMuiTheme({
     palette: {
         accent1Color: deepOrange500
@@ -24,11 +26,13 @@ class App extends Component {
 
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
-                <Paper>
-                    <Header />
-                    <ConsumptionAdd createConsumption={actions.createConsumption}/>
-                    <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
-                </Paper>
+                <Router>
+                    <Paper>
+                        <Header />
+                        <ConsumptionAdd createConsumption={actions.createConsumption}/>
+                        <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
+                    </Paper>
+                </Router>
             </MuiThemeProvider>
         )
     }
