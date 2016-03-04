@@ -6,19 +6,29 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
 import $ from 'jquery'
 
-// @TODO: data should come from the backend
-let categories = [];
-$.get('/categories', [], function(data) {
-    $.each(data, function(index, row) {
-        categories.push(<MenuItem key={row.id} value={row.id} primaryText={row.name}/>)
-    })
-});
 
 class ConsumptionAdd extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {category_id: 1};
+
+        let categories = [];
+        let selected_category = null;
+        $.ajax({
+            url: '/categories',
+            type: 'GET',
+            async: false,
+            success: function(data) {
+                $.each(data, function (index, row) {
+                    if (index === 0) {
+                        selected_category = row.id
+                    }
+                    categories.push(<MenuItem key={row.id} value={row.id} primaryText={row.name}/>)
+                })
+            }
+        });
+
+        this.state = {categories: categories, selected_category: selected_category}
     }
 
     createConsumption(event) {
@@ -37,8 +47,8 @@ class ConsumptionAdd extends Component {
     render() {
         return (
             <div style={{textAlign:'center'}}>
-                <SelectField value={this.state.category_id} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
-                    {categories}
+                <SelectField value={this.state.selected_category} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
+                    {this.state.categories}
                 </SelectField>
                 <TextField inputStyle={{textAlign:'center'}} onChange={this.changeSum.bind(this)} style={{width:100}} hintText='Sum' />
                 <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
