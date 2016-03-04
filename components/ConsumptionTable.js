@@ -8,6 +8,7 @@ import TableBody from 'material-ui/lib/table/table-body';
 import TableFooter from 'material-ui/lib/table/table-footer';
 import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
+import $ from 'jquery';
 
 class ConsumptionTable extends Component {
 
@@ -22,25 +23,13 @@ class ConsumptionTable extends Component {
             selectable: false,
             multiSelectable: false,
             enableSelectAll: false,
-            deselectOnClickaway: false
+            deselectOnClickaway: false,
         };
     }
 
-    /*
-    handleToggle = (event, toggled) => {
-        this.setState({
-            [event.target.name]: toggled,
-        });
-    };
-
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
-    */
-
-
     render() {
-        const { consumptions, actions } = this.props
+        const { consumptions, actions } = this.props;
+
         return (
             <Table
                 fixedHeader={this.state.fixedHeader}
@@ -49,8 +38,8 @@ class ConsumptionTable extends Component {
                 multiSelectable={this.state.multiSelectable}>
                 <TableHeader enableSelectAll={this.state.enableSelectAll}>
                     <TableRow>
-                        <TableHeaderColumn colSpan="3" tooltip="List of last Consumptions" style={{textAlign: 'center'}}>
-                            List of last Consumptions
+                        <TableHeaderColumn colSpan="3" tooltip="List of last 20 Consumptions" style={{textAlign: 'center'}}>
+                            List of last 20 Consumptions
                         </TableHeaderColumn>
                     </TableRow>
                     <TableRow >
@@ -69,7 +58,7 @@ class ConsumptionTable extends Component {
                             <TableRowColumn>{consumption.id}</TableRowColumn>
                             <TableRowColumn>{consumption.name}</TableRowColumn>
                             <TableRowColumn>{consumption.sum}</TableRowColumn>
-                            <TableRowColumn>{consumption.date}</TableRowColumn>
+                            <TableRowColumn>{consumption.ts}</TableRowColumn>
                         </TableRow>
                     ))}
                 </TableBody>

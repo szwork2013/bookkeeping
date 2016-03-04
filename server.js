@@ -2,13 +2,17 @@ var webpack = require('webpack')
 var webpackDevMiddleware = require('webpack-dev-middleware')
 var webpackHotMiddleware = require('webpack-hot-middleware')
 var config = require('./webpack.config')
+var bodyParser = require("body-parser");
 
 var app = new (require('express'))()
-var port = 3000
+var port = 8080
 
 var compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
-app.use(webpackHotMiddleware(compiler))
+app.use(webpackHotMiddleware(compiler));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 var cons = require('consolidate');
 
@@ -19,47 +23,47 @@ app.set('view engine', 'html');
 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('bookkeeping.db');
-/*
-db.serialize(function() {
-    db.run("CREATE TABLE IF NOT EXISTS cunsumption (" +
-        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-        "category_id INTEGER NOT NULL," +
-        "ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
-    db.run("CREATE TABLE IF NOT EXISTS category (" +
-        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL REFERENCES cunsumption(category_id) ON UPDATE CASCADE ON DELETE RESTRICT," +
-        "name VARCHAR(255) NOT NULL," +
-        "ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
-    db.run("CREATE UNIQUE INDEX IF NOT EXISTS idx_name_uq ON category(name)");
 
-    var stmt = db.prepare("INSERT OR IGNORE INTO category(name) VALUES (?)");
-    var categories = [
-        'Еда', 'Машина', 'Квартира', 'Путешествия', 'Одежда'
-    ];
-    for (var i = 0; i < categories.length; i++) {
-        stmt.run(categories[i]);
-    }
-    stmt.finalize();
-
-    db.each("SELECT name FROM category", function(err, row) {
-        console.log(row.name);
-    });
-});
-
-db.close();
-*/
 app.get("/", function(req, res) {
     res.render('index')
 });
 
 app.get("/categories", function(req, res) {
     db.all('SELECT * FROM category', [], function (error, rows) {
-        var categories = []
+        var categories = [];
         if (error) {
             console.log(error);
         } else {
             categories = rows
         }
         res.json(categories)
+    });
+});
+
+app.post("/consumptions", function(req, res) {
+    db.run('INSERT INTO consumption(category_id, sum) VALUES(?, ?)', [req.body.category_id, req.body.sum], function() {
+        var lastId = this.lastID;
+        db.get('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function(error, rows) {
+            if (error) {
+                console.log(error);
+            }
+            res.json(rows)
+        });
+
+    });
+
+});
+
+
+app.get("/consumptions", function(req, res) {
+    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY ts DESC LIMIT 20', [], function (error, rows) {
+        var consumptions = [];
+        if (error) {
+            console.log(error);
+        } else {
+            consumptions = rows
+        }
+        res.json(consumptions)
     });
 });
 
