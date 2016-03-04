@@ -56,7 +56,7 @@ app.post("/consumptions", function(req, res) {
 
 
 app.get("/consumptions", function(req, res) {
-    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY ts DESC LIMIT 20', [], function (error, rows) {
+    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
         var consumptions = [];
         if (error) {
             console.log(error);
