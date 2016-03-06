@@ -1,23 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Header from '../components/Header'
 import * as actions from '../actions'
-import Paper from 'material-ui/lib/paper';
+
 import ConsumptionAdd from '../components/ConsumptionAdd'
 import ConsumptionTable from '../components/ConsumptionTable'
-import {deepOrange500} from 'material-ui/lib/styles/colors';
-
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 
 import { Router, Route, hashHistory } from 'react-router'
 
-const muiTheme = getMuiTheme({
-    palette: {
-        accent1Color: deepOrange500
-    }
-});
+
 
 class App extends Component {
 
@@ -25,15 +16,10 @@ class App extends Component {
         const { consumptions, actions } = this.props;
 
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <Router>
-                    <Paper>
-                        <Header />
-                        <ConsumptionAdd createConsumption={actions.createConsumption}/>
-                        <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
-                    </Paper>
-                </Router>
-            </MuiThemeProvider>
+            <div>
+                <ConsumptionAdd createConsumption={actions.createConsumption}/>
+                <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
+            </div>
         )
     }
 }

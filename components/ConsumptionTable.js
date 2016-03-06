@@ -10,6 +10,7 @@ import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 import Popover from 'material-ui/lib/popover/popover';
 import RaisedButton from 'material-ui/lib/raised-button';
+import Divider from 'material-ui/lib/divider';
 
 class ConsumptionTable extends Component {
 
@@ -27,7 +28,7 @@ class ConsumptionTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarConsumptionId: null
+            toolbarConsumption: {id: null, sum: null}
         };
     }
 
@@ -35,25 +36,31 @@ class ConsumptionTable extends Component {
         this.setState({
             isToolbarOpen: true,
             toolbarAnchorEl: event.target,
-            toolbarConsumptionId: this.props.consumptions[rowIndex].id
+            toolbarConsumption: this.props.consumptions[rowIndex]
         });
     };
 
     handleToolbarClose(event) {
         this.setState({
             isToolbarOpen: false,
-            toolbarConsumptionId: null
+            toolbarConsumption: {id: null, sum: null}
         });
     };
 
     deleteConsumption() {
-        this.props.deleteConsumption(this.state.toolbarConsumptionId);
+        if (this.state.toolbarConsumption) {
+            this.props.deleteConsumption(this.state.toolbarConsumption.id);
+        }
         this.handleToolbarClose();
     }
 
     updateConsumption(event) {
-        this.props.updateConsumption(this.state.toolbarConsumptionId);
+        this.props.updateConsumption(this.state.toolbarConsumption.id);
         this.handleToolbarClose();
+    }
+
+    changeSum(event) {
+        this.setState({sum:event.target.value})
     }
 
     render() {
@@ -101,9 +108,15 @@ class ConsumptionTable extends Component {
                     anchorEl={this.state.toolbarAnchorEl}
                     anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'left', vertical: 'top'}}>
-                    <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption.bind(this)} />
-                    <RaisedButton label="Delete" primary={true} style={{margin:12}} onClick={this.deleteConsumption.bind(this)}/>
-
+                    <p style={{fontSize:11, textAlign:'center'}}>Consumption: ID {this.state.toolbarConsumption.id}</p>
+                    <Divider />
+                    <div style={{textAlign: 'center'}}>
+                        <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.sum} onChange={this.changeSum.bind(this)} hintText='Sum' style={{width:100}}/>
+                    </div>
+                    <div>
+                        <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption.bind(this)} />
+                        <RaisedButton label="Delete" primary={true} style={{margin:12}} onClick={this.deleteConsumption.bind(this)}/>
+                    </div>
                 </Popover>
             </div>
         )
