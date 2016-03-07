@@ -17,7 +17,10 @@ class Consumptions extends Component {
         return (
             <div>
                 <ConsumptionAdd createConsumption={actions.createConsumption}/>
-                <ConsumptionTable consumptions={consumptions} deleteConsumption={actions.deleteConsumption} updateConsumption={actions.updateConsumption}/>
+                <ConsumptionTable
+                    consumptions={consumptions}
+                    deleteConsumption={actions.deleteConsumption}
+                    updateConsumption={actions.updateConsumption}/>
             </div>
         )
     }

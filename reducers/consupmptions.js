@@ -33,9 +33,22 @@ export default function consumptions(state = initialState, action) {
             ];
 
         case UPDATE_CONSUMPTION:
-            return state.filter(todo =>
-                todo.id !== action.id
-            );
+            $.ajax({
+                url: '/consumptions',
+                type: 'PUT',
+                async: false,
+                data: {
+                    id: action.consumption_id,
+                    sum: action.sum
+                },
+                success(data) {
+                    state = state.map(consumption =>
+                        consumption.id === action.consumption_id ? Object.assign({}, consumption, { sum: action.sum }) : consumption
+                    )
+                }
+            });
+
+            return state;
 
         case DELETE_CONSUMPTION:
             $.ajax({

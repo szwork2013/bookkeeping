@@ -71,6 +71,12 @@ app.delete("/consumptions", function(req, res) {
     });
 });
 
+app.put("/consumptions", function(req, res) {
+    db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function() {
+        res.json({status:true});
+    });
+});
+
 app.listen(port, function(error) {
     if (error) {
         console.error(error)

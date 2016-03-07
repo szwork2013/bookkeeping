@@ -48,14 +48,12 @@ class ConsumptionTable extends Component {
     };
 
     deleteConsumption() {
-        if (this.state.toolbarConsumption) {
-            this.props.deleteConsumption(this.state.toolbarConsumption.id);
-        }
+        this.props.deleteConsumption(this.state.toolbarConsumption.id);
         this.handleToolbarClose();
     }
 
     updateConsumption(event) {
-        this.props.updateConsumption(this.state.toolbarConsumption.id);
+        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.sum);
         this.handleToolbarClose();
     }
 
