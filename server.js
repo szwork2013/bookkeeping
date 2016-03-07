@@ -24,7 +24,7 @@ app.set('view engine', 'html');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('bookkeeping.db');
 
-app.get("/", function(req, res) {
+app.get(['/', '/reports'], function(req, res) {
     res.render('index')
 });
 
@@ -51,7 +51,6 @@ app.post("/consumptions", function(req, res) {
         });
     });
 });
-
 
 app.get("/consumptions", function(req, res) {
     db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
