@@ -52,6 +52,18 @@ app.post("/consumptions", function(req, res) {
     });
 });
 
+app.get("/report1-data", function(req, res) {
+    db.all("select strftime('%d.%m', ts) as date, sum(sum) as sum from consumption group by date LIMIT 30", [], function (error, rows) {
+        var reportData = [];
+        if (error) {
+            console.log(error);
+        } else {
+            reportData = rows.map(function(a) { return [a.date, a.sum] });
+        }
+        res.json(reportData)
+    });
+});
+
 app.get("/consumptions", function(req, res) {
     db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
         var consumptions = [];

@@ -11,10 +11,21 @@ import {deepOrange500} from 'material-ui/lib/styles/colors';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 var Chart = require('react-google-charts').Chart;
 import { Router, Route, hashHistory } from 'react-router'
+import $ from 'jquery';
 
 const Reports = React.createClass({
 
     getInitialState: function() {
+        let rows = [];
+        $.ajax({
+            url: '/report1-data',
+            type: 'GET',
+            async: false,
+            success: function(data) {
+                rows = data
+            }
+        });
+
         return {
             chart:{
                 columns : [
@@ -23,20 +34,11 @@ const Reports = React.createClass({
                         type:'string'
                     },
                     {
-                        label:'Еда',
-                        type:'number'
-                    },
-                    {
-                        label:'Квартира',
+                        label:'Sum',
                         type:'number'
                     }
                 ],
-                rows : [
-                    ['19.03', 500000, 500000],
-                    ['19.04', 1500000, 350000],
-                    ['19.05', 800000, 500000],
-                    ['19.06', 350000, 1500000]
-                ],
+                rows: rows,
                 height: 500,
                 options: {curveType: 'function', title: "Your Consumptions", hAxis: {title: 'Day'}, vAxis: {title: 'Sum'}},
                 chartType: "LineChart",
