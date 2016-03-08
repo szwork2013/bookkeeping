@@ -41,15 +41,20 @@ app.get("/categories", function(req, res) {
 });
 
 app.post("/consumptions", function(req, res) {
-    db.run('INSERT INTO consumption(category_id, sum) VALUES(?, ?)', [req.body.category_id, req.body.sum], function() {
-        var lastId = this.lastID;
-        db.get('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function(error, rows) {
-            if (error) {
-                console.log(error);
-            }
-            res.json(rows)
+    if (req.body.category_id && req.body.sum) {
+        db.run('INSERT INTO consumption(category_id, sum) VALUES(?, ?)', [req.body.category_id, req.body.sum], function () {
+            var lastId = this.lastID;
+            db.get('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function (error, rows) {
+                if (error) {
+                    console.log(error);
+                }
+                res.json(rows)
+            });
         });
-    });
+    }
+    else {
+        res.send(400);
+    }
 });
 
 app.get("/report1-data", function(req, res) {
@@ -77,15 +82,25 @@ app.get("/consumptions", function(req, res) {
 });
 
 app.delete("/consumptions", function(req, res) {
-    db.run('DELETE FROM consumption WHERE id = ?', [req.body.id], function() {
-        res.json({status:true});
-    });
+    if (req.body.id) {
+        db.run('DELETE FROM consumption WHERE id = ?', [req.body.id], function () {
+            res.json({status: true});
+        });
+    }
+    else {
+        res.send(400);
+    }
 });
 
 app.put("/consumptions", function(req, res) {
-    db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function() {
-        res.json({status:true});
-    });
+    if (req.body.sum && req.body.id) {
+        db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function () {
+            res.json({status: true});
+        });
+    }
+    else {
+        res.send(400);
+    }
 });
 
 app.listen(port, function(error) {

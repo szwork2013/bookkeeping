@@ -53,12 +53,12 @@ class ConsumptionTable extends Component {
     }
 
     updateConsumption(event) {
-        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.sum);
+        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.toolbarConsumption.sum);
         this.handleToolbarClose();
     }
 
     changeSum(event) {
-        this.setState({sum:event.target.value})
+        this.state.toolbarConsumption.sum = event.target.value;
     }
 
     render() {
