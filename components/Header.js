@@ -8,7 +8,6 @@ class Header extends Component {
         return (
             <AppBar showMenuIconButton={false} title="Bookkeeping Serice">
                 <RaisedButton onClick={() => browserHistory.push('/')} label="Consumptions" style={{margin:12}} />
-                <RaisedButton onClick={() => browserHistory.push('/categories')} label="Categories" style={{margin:12}} />
                 <RaisedButton onClick={() => browserHistory.push('/reports')} label="Reports" style={{margin:12}} />
             </AppBar>
         )
