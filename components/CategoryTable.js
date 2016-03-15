@@ -12,7 +12,7 @@ import Popover from 'material-ui/lib/popover/popover';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Divider from 'material-ui/lib/divider';
 
-class ConsumptionTable extends Component {
+class CategoryTable extends Component {
 
     constructor(props) {
         super(props);
@@ -28,7 +28,7 @@ class ConsumptionTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarConsumption: {id: null, sum: null}
+            toolbarCategory: {id: null, name: null, ts: null}
         };
     }
 
@@ -36,33 +36,33 @@ class ConsumptionTable extends Component {
         this.setState({
             isToolbarOpen: true,
             toolbarAnchorEl: event.target,
-            toolbarConsumption: this.props.consumptions[rowIndex]
+            toolbarCategory: this.props.categories[rowIndex]
         });
     };
 
     handleToolbarClose(event) {
         this.setState({
             isToolbarOpen: false,
-            toolbarConsumption: {id: null, sum: null, ts: null}
+            toolbarCategory: {id: null, name: null}
         });
     };
 
-    deleteConsumption() {
-        this.props.deleteConsumption(this.state.toolbarConsumption.id);
+    deleteCategory() {
+        this.props.deleteCategory(this.state.toolbarCategory.id);
         this.handleToolbarClose();
     }
 
-    updateConsumption(event) {
-        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.toolbarConsumption.sum);
+    updateCategory(event) {
+        this.props.updateCategory(this.state.toolbarCategory.id, this.state.toolbarCategory.name);
         this.handleToolbarClose();
     }
 
-    changeSum(event) {
-        this.setState({toolbarConsumption: {id: this.state.toolbarConsumption.id, sum: event.target.value, ts: this.state.toolbarConsumption.ts}});
+    changeName(event) {
+        this.setState({toolbarCategory: {id: this.state.toolbarCategory.id, name: event.target.value, ts: this.state.toolbarCategory.ts}});
     }
 
     render() {
-        const { consumptions, actions } = this.props;
+        const { categories, actions } = this.props;
 
         return (
             <div>
@@ -74,14 +74,13 @@ class ConsumptionTable extends Component {
                     multiSelectable={this.state.multiSelectable}>
                     <TableHeader enableSelectAll={this.state.enableSelectAll}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Consumptions" style={{textAlign: 'center'}}>
-                                List of last 20 Consumptions
+                            <TableHeaderColumn colSpan="3" tooltip="List of last 20 Categories" style={{textAlign: 'center'}}>
+                                List of last 20 Categories
                             </TableHeaderColumn>
                         </TableRow>
                         <TableRow >
                             <TableHeaderColumn tooltip="The ID">ID</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="The Sum">Sum</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Date">Date</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -89,12 +88,11 @@ class ConsumptionTable extends Component {
                         deselectOnClickaway={this.state.deselectOnClickaway}
                         showRowHover={this.state.showRowHover}
                         stripedRows={this.state.stripedRows}>
-                        {consumptions.map((consumption, index) => (
+                        {categories.map((item, index) => (
                             <TableRow key={index} selected={false}>
-                                <TableRowColumn>{consumption.id}</TableRowColumn>
-                                <TableRowColumn>{consumption.name}</TableRowColumn>
-                                <TableRowColumn>{consumption.sum}</TableRowColumn>
-                                <TableRowColumn>{consumption.ts}</TableRowColumn>
+                                <TableRowColumn>{item.id}</TableRowColumn>
+                                <TableRowColumn>{item.name}</TableRowColumn>
+                                <TableRowColumn>{item.ts}</TableRowColumn>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -106,14 +104,14 @@ class ConsumptionTable extends Component {
                     anchorEl={this.state.toolbarAnchorEl}
                     anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'left', vertical: 'top'}}>
-                    <p style={{fontSize:11, textAlign:'center'}}>Consumption: ID {this.state.toolbarConsumption.id}</p>
+                    <p style={{fontSize:11, textAlign:'center'}}>Category: ID {this.state.toolbarCategory.id}</p>
                     <Divider />
                     <div style={{textAlign: 'center'}}>
-                        <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.sum} onChange={this.changeSum.bind(this)} hintText='Sum' style={{width:100}}/>
+                        <TextField inputStyle={{textAlign:'center'}} value={this.state.toolbarCategory.name} onChange={this.changeName.bind(this)} hintText='Name' style={{width:100}}/>
                     </div>
                     <div>
-                        <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption.bind(this)} />
-                        <RaisedButton label="Delete" primary={true} style={{margin:12}} onClick={this.deleteConsumption.bind(this)}/>
+                        <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateCategory.bind(this)} />
+                        <RaisedButton label="Delete" primary={true} style={{margin:12}} onClick={this.deleteCategory.bind(this)}/>
                     </div>
                 </Popover>
             </div>
@@ -121,4 +119,4 @@ class ConsumptionTable extends Component {
     }
 }
 
-export default ConsumptionTable;
+export default CategoryTable;

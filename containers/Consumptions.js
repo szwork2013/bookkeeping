@@ -7,16 +7,22 @@ import ConsumptionAdd from '../components/ConsumptionAdd'
 import ConsumptionTable from '../components/ConsumptionTable'
 
 import { Router, Route, hashHistory } from 'react-router'
+import $ from 'jquery';
 
 
 class Consumptions extends Component {
+    componentWillMount() {
+
+        this.props.dispatch(actions.initConsumptions());
+        this.props.dispatch(actions.initCategories());
+    }
 
     render() {
-        const { consumptions, actions } = this.props;
+        const { consumptions, categories, actions } = this.props;
 
         return (
             <div>
-                <ConsumptionAdd createConsumption={actions.createConsumption}/>
+                <ConsumptionAdd createConsumption={actions.createConsumption} categories={categories}/>
                 <ConsumptionTable
                     consumptions={consumptions}
                     deleteConsumption={actions.deleteConsumption}
@@ -27,19 +33,21 @@ class Consumptions extends Component {
 }
 
 Consumptions.propTypes = {
-    consumptions: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
+
+const mapStateToProps = (state) => {
     return {
-        consumptions: state.consumptions
+        consumptions: state.consumptions,
+        categories: state.categories
     }
-}
+};
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(actions, dispatch)
+        actions: bindActionCreators(actions, dispatch),
+        dispatch: dispatch
     }
 }
 

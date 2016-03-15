@@ -6,28 +6,23 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
 import $ from 'jquery';
 
+
 class ConsumptionAdd extends Component {
 
     constructor(props) {
         super(props);
 
-        let categories = [];
-        let category_id = null;
-        $.ajax({
-            url: '/categories',
-            type: 'GET',
-            async: false,
-            success: function(data) {
-                $.each(data, function (index, row) {
-                    if (index === 0) {
-                        category_id = row.id
-                    }
-                    categories.push(<MenuItem key={row.id} value={row.id} primaryText={row.name}/>)
-                })
-            }
-        });
+        this.state = {
+            category_id: null,
+            sum: 100000,
+            categories: []
+        };
+    }
 
-        this.state = {sum: 100000, category_id: category_id, categories: categories}
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.categories instanceof Array && nextProps.categories.length) {
+            this.setState({category_id: nextProps.categories[0].id});
+        }
     }
 
     createConsumption(event) {
@@ -43,12 +38,14 @@ class ConsumptionAdd extends Component {
     }
 
     render() {
-        const {categories} = this.state;
+        const { categories } = this.props;
 
         return (
             <div style={{textAlign:'center'}}>
                 <SelectField value={this.state.category_id} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
-                    {categories}
+                    {categories.map((item, index) => (
+                        <MenuItem key={item.id} value={item.id} primaryText={item.name}/>
+                    ))}
                 </SelectField>
                 <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.sum} onChange={this.changeSum.bind(this)} style={{width:100}} hintText='Sum' />
                 <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
@@ -60,7 +57,8 @@ class ConsumptionAdd extends Component {
 }
 
 ConsumptionAdd.propTypes = {
-    createConsumption: PropTypes.func.isRequired
+    createConsumption: PropTypes.func.isRequired,
+    categories: PropTypes.array.isRequired
 };
 
 

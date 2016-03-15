@@ -1,15 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as actions from '../actions'
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import {deepOrange500} from 'material-ui/lib/styles/colors';
 import Paper from 'material-ui/lib/paper';
+import {connect} from 'react-redux';
 
 import Header from '../components/Header'
-import ConsumptionAdd from '../components/ConsumptionAdd'
-import ConsumptionTable from '../components/ConsumptionTable'
 
 import { Router, Route, hashHistory } from 'react-router'
 
@@ -19,7 +15,7 @@ const muiTheme = getMuiTheme({
     }
 });
 
-export default function App({ children }) {
+const App = function({ children }) {
 
     return (
         <MuiThemeProvider muiTheme={muiTheme}>
@@ -30,3 +26,5 @@ export default function App({ children }) {
         </MuiThemeProvider>
     )
 }
+
+export default connect(state => state)(App);

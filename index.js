@@ -7,15 +7,18 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import { combineReducers, createStore } from 'redux'
 
 import consumptions from './reducers/consupmptions'
+import categories from './reducers/categories'
 import App from './containers/App'
 import Reports from './containers/Reports'
 import Consumptions from './containers/Consumptions'
+import Categories from './containers/Categories'
 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
 const reducers = combineReducers({
     consumptions,
+    categories,
     routing: routerReducer
 });
 
@@ -27,8 +30,9 @@ render(
     (<Provider store={store}>
         <Router history={history}>
             <Route path="/" component={App}>
-                <IndexRoute component={Consumptions}/>
-                <Route path="reports" component={Reports}/>
+                <IndexRoute component={Consumptions} />
+                <Route path="reports-page" component={Reports}/>
+                <Route path="categories-page" component={Categories}/>
             </Route>
         </Router>
     </Provider>),

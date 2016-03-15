@@ -24,12 +24,12 @@ app.set('view engine', 'html');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('bookkeeping.db');
 
-app.get(['/', '/reports'], function(req, res) {
+app.get(['/', '/reports-page', '/categories-page'], function(req, res) {
     res.render('index')
 });
 
 app.get("/categories", function(req, res) {
-    db.all('SELECT * FROM category', [], function (error, rows) {
+    db.all('SELECT * FROM category ORDER BY category.ts DESC', [], function (error, rows) {
         var categories = [];
         if (error) {
             console.log(error);
@@ -56,6 +56,24 @@ app.post("/consumptions", function(req, res) {
         res.send(400);
     }
 });
+
+app.post("/categories", function(req, res) {
+    if (req.body.name) {
+        db.run('INSERT INTO category(name) VALUES(?)', [req.body.name], function () {
+            var lastId = this.lastID;
+            db.get('SELECT category.id, category.name, category.ts FROM category WHERE category.id = ?', [lastId], function (error, rows) {
+                if (error) {
+                    console.log(error);
+                }
+                res.json(rows)
+            });
+        });
+    }
+    else {
+        res.send(400);
+    }
+});
+
 
 app.get("/report1-data", function(req, res) {
     db.all("select strftime('%d.%m', ts) as date, sum(sum) as sum from consumption group by date LIMIT 30", [], function (error, rows) {
@@ -95,6 +113,28 @@ app.delete("/consumptions", function(req, res) {
 app.put("/consumptions", function(req, res) {
     if (req.body.sum && req.body.id) {
         db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function () {
+            res.json({status: true});
+        });
+    }
+    else {
+        res.send(400);
+    }
+});
+
+app.put("/categories", function(req, res) {
+    if (req.body.name && req.body.id) {
+        db.run('UPDATE category SET name = ? WHERE id = ?', [req.body.name, req.body.id], function () {
+            res.json({status: true});
+        });
+    }
+    else {
+        res.send(400);
+    }
+});
+
+app.delete("/categories", function(req, res) {
+    if (req.body.id) {
+        db.run('DELETE FROM category WHERE id = ?', [req.body.id], function () {
             res.json({status: true});
         });
     }
