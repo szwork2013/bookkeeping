@@ -137,6 +137,7 @@ app.get("/report1-data", function(req, res) {
     db.get("SELECT date('now', 'start of month') AS start_month, " +
         "date('now','start of month','+1 month','-1 day') AS end_month, " +
         "strftime('%m', 'now') as now_month, " +
+        "strftime('%d', 'now') as now_day, " +
         "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function(error, dateRow) {
         db.all("SELECT strftime('%d.%m', cons.ts) AS date, " +
             "sum(cons.sum) AS sum, " +
@@ -156,8 +157,11 @@ app.get("/report1-data", function(req, res) {
 
             var day = 1;
             while (day <= dateRow.days_amount) {
+                if (day > dateRow.now_day) {
+                    break;
+                }
                 var rowTmp = Array.apply(null, Array(columnsTmp.length + 1)).map(Number.prototype.valueOf, 0);
-                rowTmp[0] = ("0" + day).slice(-2) + '.' + ("0" + month).slice(-2);
+                rowTmp[0] = ("0" + day).slice(-2) + '.' + ("0" + dateRow.now_month).slice(-2);
                 rowsTmp.push(rowTmp);
                 day++;
             }
