@@ -16,28 +16,21 @@ import $ from 'jquery';
 const Reports = React.createClass({
 
     getInitialState: function() {
+        let columns = [];
         let rows = [];
         $.ajax({
             url: '/report1-data',
             type: 'GET',
             async: false,
             success: function(data) {
-                rows = data
+                columns = data.columns;
+                rows = data.rows;
             }
         });
 
         return {
             chart:{
-                columns : [
-                    {
-                        label:'Date',
-                        type:'string'
-                    },
-                    {
-                        label:'Sum',
-                        type:'number'
-                    }
-                ],
+                columns : [{label:'Date', type:'string'}].concat(columns),
                 rows: rows,
                 height: 500,
                 options: {curveType: 'function', title: "Your Consumptions", hAxis: {title: 'Day'}, vAxis: {title: 'Sum'}},
