@@ -131,8 +131,6 @@ app.delete("/categories", function(req, res) {
 
 app.get("/report1-data", function(req, res) {
     var reportData = {columns:[], rows: []};
-    var date = new Date();
-    var month = date.getMonth() + 1;
 
     var columnsTmp = [];
     var rowsTmp = [];
@@ -183,7 +181,6 @@ app.get("/report1-data", function(req, res) {
 
 });
 
-
 app.listen(port, function(error) {
     if (error) {
         console.error(error)
@@ -191,12 +188,3 @@ app.listen(port, function(error) {
         console.info("==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port)
     }
 });
-
-
-
-///// helpers
-var getUnique = function(a) {
-    return a.filter(function (value, index, self) {
-        return self.indexOf(value) === index;
-    });
-}
