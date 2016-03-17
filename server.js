@@ -149,9 +149,9 @@ app.get("/report1-data", function(req, res) {
             "AND cons.ts <= ? " +
             "GROUP BY date, cat_id ORDER BY date", [dateRow.start_month, dateRow.end_month], function (error, rows) {
             rows.map(function(item) {
-                if (columnsTmp.indexOf(item.cat_name) === -1) {
+                if (columnsTmp.indexOf(item.cat_id) === -1) {
                     reportData.columns.push({label: item.cat_name, type: 'number'});
-                    columnsTmp.push(item.cat_name);
+                    columnsTmp.push(item.cat_id);
                 }
             });
 
@@ -169,7 +169,7 @@ app.get("/report1-data", function(req, res) {
             rowsTmp.map(function(rowTmp) {
                 rows.map(function(item) {
                     if (item.date == rowTmp[0]) {
-                        var columnIndex = columnsTmp.indexOf(item.cat_name);
+                        var columnIndex = columnsTmp.indexOf(item.cat_id);
                         rowTmp[columnIndex+1] = item.sum;
                     }
                 });
