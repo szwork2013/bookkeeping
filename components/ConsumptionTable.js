@@ -74,7 +74,7 @@ class ConsumptionTable extends Component {
                     multiSelectable={this.state.multiSelectable}>
                     <TableHeader enableSelectAll={this.state.enableSelectAll}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Consumptions" style={{textAlign: 'center'}}>
+                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Consumptions" style={{textAlign: 'right'}}>
                                 List of last 20 Consumptions
                             </TableHeaderColumn>
                         </TableRow>

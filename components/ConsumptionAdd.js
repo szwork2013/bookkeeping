@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
+import Paper from 'material-ui/lib/paper';
 import $ from 'jquery';
 
 
@@ -15,6 +16,7 @@ class ConsumptionAdd extends Component {
         this.state = {
             category_id: null,
             sum: 100000,
+            comment: '',
             categories: []
         };
     }
@@ -33,6 +35,10 @@ class ConsumptionAdd extends Component {
         this.setState({sum:event.target.value})
     }
 
+    changeComment(event) {
+        this.setState({comment:event.target.value})
+    }
+
     changeCategory(event, index, value) {
         this.setState({category_id:value})
     }
@@ -41,14 +47,18 @@ class ConsumptionAdd extends Component {
         const { categories } = this.props;
 
         return (
-            <div style={{textAlign:'center'}}>
-                <SelectField value={this.state.category_id} style={{margin:20}} onChange={this.changeCategory.bind(this)}>
+            <div style={{textAlign:'center', padding:40}}>
+                <SelectField value={this.state.category_id} style={{position: 'relative', top:4}} onChange={this.changeCategory.bind(this)}>
                     {categories.map((item, index) => (
                         <MenuItem key={item.id} value={item.id} primaryText={item.name}/>
                     ))}
                 </SelectField>
+                &nbsp;
                 <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.sum} onChange={this.changeSum.bind(this)} style={{width:100}} hintText='Sum' />
-                <FloatingActionButton style={{marginLeft:20}} onClick={this.createConsumption.bind(this)}>
+                <br />
+                <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.comment} onChange={this.changeComment.bind(this)} hintText='Comment' />
+                <br />
+                <FloatingActionButton onClick={this.createConsumption.bind(this)} style={{marginTop:20}}>
                     <ContentAdd addConsumption />
                 </FloatingActionButton>
             </div>

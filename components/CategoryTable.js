@@ -74,7 +74,7 @@ class CategoryTable extends Component {
                     multiSelectable={this.state.multiSelectable}>
                     <TableHeader enableSelectAll={this.state.enableSelectAll}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="3" tooltip="List of last 20 Categories" style={{textAlign: 'center'}}>
+                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Categories" style={{textAlign: 'center'}}>
                                 List of last 20 Categories
                             </TableHeaderColumn>
                         </TableRow>
