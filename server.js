@@ -51,9 +51,9 @@ app.get("/categories", function(req, res) {
 
 app.post("/consumptions", function(req, res) {
     if (req.body.category_id && req.body.sum) {
-        db.run('INSERT INTO consumption(category_id, sum) VALUES(?, ?)', [req.body.category_id, req.body.sum], function () {
+        db.run('INSERT INTO consumption(category_id, sum, comment) VALUES(?, ?, ?)', [req.body.category_id, req.body.sum, req.body.comment], function () {
             var lastId = this.lastID;
-            db.get('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function (error, rows) {
+            db.get('SELECT consumption.id, category.name, consumption.sum, consumption.comment, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function (error, rows) {
                 if (error) {
                     console.log(error);
                 }
@@ -84,7 +84,7 @@ app.post("/categories", function(req, res) {
 });
 
 app.get("/consumptions", function(req, res) {
-    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
+    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.comment, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
         var consumptions = [];
         if (error) {
             console.log(error);
@@ -108,7 +108,7 @@ app.delete("/consumptions", function(req, res) {
 
 app.put("/consumptions", function(req, res) {
     if (req.body.sum && req.body.id) {
-        db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function () {
+        db.run('UPDATE consumption SET sum = ?, comment = ? WHERE id = ?', [req.body.sum, req.body.comment, req.body.id], function () {
             res.json({status: true});
         });
     }

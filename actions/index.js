@@ -29,7 +29,7 @@ export function initCategories() {
     return { type: types.INIT_CATEGORIES, categories: categories }
 }
 
-export function createConsumption(category_id, sum) {
+export function createConsumption(category_id, sum, comment) {
     let lastRow = {};
     $.ajax({
         url: '/consumptions',
@@ -37,7 +37,8 @@ export function createConsumption(category_id, sum) {
         async: false,
         data: {
             category_id: category_id,
-            sum: sum
+            sum: sum,
+            comment: comment
         },
         success(data) {
             //@TODO: process errors
@@ -49,21 +50,22 @@ export function createConsumption(category_id, sum) {
 
 }
 
-export function updateConsumption(consumption_id, sum) {
+export function updateConsumption(consumption_id, sum, comment) {
     $.ajax({
         url: '/consumptions',
         type: 'PUT',
         async: false,
         data: {
             id: consumption_id,
-            sum: sum
+            sum: sum,
+            comment: comment
         },
         success(data) {
             //@TODO: process errors
         }
     });
 
-    return { type: types.UPDATE_CONSUMPTION, consumption_id, sum }
+    return { type: types.UPDATE_CONSUMPTION, consumption_id, sum, comment }
 }
 
 export function updateCategory(category_id, name) {

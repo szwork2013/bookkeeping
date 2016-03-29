@@ -28,7 +28,7 @@ class ConsumptionTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarConsumption: {id: null, sum: null}
+            toolbarConsumption: {id: null, sum: null, comment: null, ts: null}
         };
     }
 
@@ -36,7 +36,7 @@ class ConsumptionTable extends Component {
         this.setState({
             isToolbarOpen: true,
             toolbarAnchorEl: event.target,
-            toolbarConsumption: this.props.consumptions[rowIndex]
+            toolbarConsumption: Object.create(this.props.consumptions[rowIndex])
         });
     };
 
@@ -53,17 +53,25 @@ class ConsumptionTable extends Component {
     }
 
     updateConsumption(event) {
-        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.toolbarConsumption.sum);
+        this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.toolbarConsumption.sum, this.state.toolbarConsumption.comment);
         this.handleToolbarClose();
     }
 
     changeSum(event) {
-        this.setState({toolbarConsumption: {id: this.state.toolbarConsumption.id, sum: event.target.value, ts: this.state.toolbarConsumption.ts}});
+        let toolbarConsumption = this.state.toolbarConsumption;
+        toolbarConsumption.sum = event.target.value;
+        this.setState({toolbarConsumption: toolbarConsumption});
+    }
+
+    changeComment(event) {
+        let toolbarConsumption = this.state.toolbarConsumption;
+        toolbarConsumption.comment = event.target.value;
+        this.setState({toolbarConsumption: toolbarConsumption});
     }
 
     render() {
         const { consumptions, actions } = this.props;
-
+        console.log(consumptions[0]);
         return (
             <div>
                 <Table
@@ -74,7 +82,7 @@ class ConsumptionTable extends Component {
                     multiSelectable={this.state.multiSelectable}>
                     <TableHeader enableSelectAll={this.state.enableSelectAll}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Consumptions" style={{textAlign: 'right'}}>
+                            <TableHeaderColumn colSpan="5" tooltip="List of last 20 Consumptions" style={{textAlign: 'right'}}>
                                 List of last 20 Consumptions
                             </TableHeaderColumn>
                         </TableRow>
@@ -82,6 +90,7 @@ class ConsumptionTable extends Component {
                             <TableHeaderColumn tooltip="The ID">ID</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Sum">Sum</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="The Comment">Comment</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Date">Date</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -94,6 +103,7 @@ class ConsumptionTable extends Component {
                                 <TableRowColumn>{consumption.id}</TableRowColumn>
                                 <TableRowColumn>{consumption.name}</TableRowColumn>
                                 <TableRowColumn>{consumption.sum}</TableRowColumn>
+                                <TableRowColumn>{consumption.comment}</TableRowColumn>
                                 <TableRowColumn>{consumption.ts}</TableRowColumn>
                             </TableRow>
                         ))}
@@ -110,6 +120,8 @@ class ConsumptionTable extends Component {
                     <Divider />
                     <div style={{textAlign: 'center'}}>
                         <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.sum} onChange={this.changeSum.bind(this)} hintText='Sum' style={{width:100}}/>
+                        <br />
+                        <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.comment} onChange={this.changeComment.bind(this)} hintText='Comment' style={{width:100}}/>
                     </div>
                     <div>
                         <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption.bind(this)} />

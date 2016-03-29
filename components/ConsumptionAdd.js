@@ -28,7 +28,7 @@ class ConsumptionAdd extends Component {
     }
 
     createConsumption(event) {
-        this.props.createConsumption(this.state.category_id, this.state.sum);
+        this.props.createConsumption(this.state.category_id, this.state.sum, this.state.comment);
     }
 
     changeSum(event) {
