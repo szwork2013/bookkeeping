@@ -7,17 +7,17 @@ var config = require('./webpack.config.js');
 
 var bodyParser = require("body-parser");
 var app = new express();
-
-var port = 8000;
+var port;
 
 if (process.env.NODE_ENV === 'development') {
     var compiler = webpack(config);
     app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }));
     app.use(webpackHotMiddleware(compiler));
+    port = 8080;
 }
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(compression());
+    port = 8000;
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));

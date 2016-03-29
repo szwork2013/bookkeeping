@@ -71,7 +71,6 @@ class ConsumptionTable extends Component {
 
     render() {
         const { consumptions, actions } = this.props;
-        console.log(consumptions[0]);
         return (
             <div>
                 <Table
