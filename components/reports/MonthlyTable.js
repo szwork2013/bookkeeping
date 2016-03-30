@@ -24,29 +24,8 @@ const MonthlyTable = React.createClass({
             type: 'GET',
             async: false,
             success: function(data) {
-                tableRows = data;
-            }
-        });
-
-        $.ajax({
-            url: 'https://www.mtbank.by/currxml.php',
-            type: 'GET',
-            async: false,
-            success: function(data) {
-                let currencies, code, codeTo, sale, purchase;
-                currencies = $(data).find('currency');
-                for (var i = 0; i < currencies.length; i++) {
-                    let item = currencies[i];
-                    code = $(item).find('code').text();
-                    codeTo = $(item).find('codeTo').text();
-                    if (code === 'BYR' && codeTo === 'USD') {
-                        //sale = parseInt($(item).find('sale').text());
-                        purchase = parseInt($(item).find('purchase').text());
-                        //salary = 800 * ((sale + purchase) / 2);
-                        salary = 800 * purchase;
-                        break;
-                    }
-                }
+                tableRows = data.rows;
+                salary = data.salary;
             }
         });
 

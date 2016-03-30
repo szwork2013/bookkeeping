@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
 var config = require('./webpack.config.js');
-
+var xmlparser = require('express-xml-bodyparser');
 
 var bodyParser = require("body-parser");
 var app = new express();
@@ -21,7 +21,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(xmlparser());
 
 var cons = require('consolidate');
 
@@ -192,7 +193,7 @@ app.get("/monthly-chart", function(req, res) {
 });
 
 app.get("/monthly-table", function(req, res) {
-    var reportData = [];
+    var reportData = {rows:[], salary: 0};
 
     db.get("SELECT date('now', 'start of month') AS start_month, " +
         "date('now','start of month','+1 month','-1 day') AS end_month, " +
@@ -208,8 +209,36 @@ app.get("/monthly-table", function(req, res) {
             "WHERE cons.ts >= ? " +
             "AND cons.ts <= ? " +
             "GROUP BY date ORDER BY date DESC", [dateRow.start_month, dateRow.end_month], function (error, rows) {
-            reportData = rows;
-            res.json(reportData);
+            reportData.rows = rows;
+
+            var request = require('request');
+            request('https://www.mtbank.by/currxml.php', function (error, response, body) {
+                var parseString = require('xml2js').parseString;
+
+                if (!error && response.statusCode == 200) {
+                    var currencies, code, codeTo, sale, purchase;
+                    parseString(body, function (err, result) {
+                        currencies = result.rates.currency;
+
+                        for (var i = 0; i < currencies.length; i++) {
+                            var item = currencies[i];
+                            code = item.code[0];
+                            codeTo = item.codeTo[0];
+                            if ((code === 'BYR' && codeTo === 'USD') || (code === 'USD' && codeTo === 'BYR')) {
+                                //sale = parseInt($(item).find('sale').text());
+                                purchase = parseInt(item.purchase);
+                                //salary = 800 * ((sale + purchase) / 2);
+                                reportData.salary = 800 * purchase;
+                                break;
+                            }
+                        }
+
+                        res.json(reportData);
+                    });
+                }
+            });
+
+
         });
     });
 
