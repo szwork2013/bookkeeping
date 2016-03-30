@@ -27,5 +27,8 @@ export default {
         borderColor: grey300,
         disabledColor: ColorManipulator.fade(darkBlack, 0.3),
         pickerHeaderColor: cyan500*/
+    },
+    tabs: {
+        backgroundColor: blue500
     }
 };

@@ -139,8 +139,8 @@ app.delete("/categories", function(req, res) {
     }
 });
 
-app.get("/report1-data", function(req, res) {
-    var reportData = {columns:[], rows: []};
+app.get("/monthly-chart", function(req, res) {
+    var reportData = {columns: [], rows: []};
 
     var columnsTmp = [];
     var rowsTmp = [];
@@ -148,7 +148,7 @@ app.get("/report1-data", function(req, res) {
         "date('now','start of month','+1 month','-1 day') AS end_month, " +
         "strftime('%m', 'now') as now_month, " +
         "strftime('%d', 'now') as now_day, " +
-        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function(error, dateRow) {
+        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function (error, dateRow) {
         db.all("SELECT strftime('%d.%m', cons.ts) AS date, " +
             "sum(cons.sum) AS sum, " +
             "cons.category_id AS cat_id, " +
@@ -158,7 +158,7 @@ app.get("/report1-data", function(req, res) {
             "WHERE cons.ts >= ? " +
             "AND cons.ts <= ? " +
             "GROUP BY date, cat_id ORDER BY date", [dateRow.start_month, dateRow.end_month], function (error, rows) {
-            rows.map(function(item) {
+            rows.map(function (item) {
                 if (columnsTmp.indexOf(item.cat_id) === -1) {
                     reportData.columns.push({label: item.cat_name, type: 'number'});
                     columnsTmp.push(item.cat_id);
@@ -176,11 +176,11 @@ app.get("/report1-data", function(req, res) {
                 day++;
             }
 
-            rowsTmp.map(function(rowTmp) {
-                rows.map(function(item) {
+            rowsTmp.map(function (rowTmp) {
+                rows.map(function (item) {
                     if (item.date == rowTmp[0]) {
                         var columnIndex = columnsTmp.indexOf(item.cat_id);
-                        rowTmp[columnIndex+1] = item.sum;
+                        rowTmp[columnIndex + 1] = item.sum;
                     }
                 });
             });
@@ -189,9 +189,29 @@ app.get("/report1-data", function(req, res) {
             res.json(reportData);
         });
     });
+});
 
+app.get("/monthly-table", function(req, res) {
+    var reportData = [];
 
-
+    db.get("SELECT date('now', 'start of month') AS start_month, " +
+        "date('now','start of month','+1 month','-1 day') AS end_month, " +
+        "strftime('%m', 'now') as now_month, " +
+        "strftime('%d', 'now') as now_day, " +
+        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function (error, dateRow) {
+        db.all("SELECT strftime('%d.%m', cons.ts) AS date, " +
+            "sum(cons.sum) AS sum, " +
+            "GROUP_CONCAT(cons.comment, '; ') as comments, " +
+            "GROUP_CONCAT(cat.name, '; ') AS categories " +
+            "FROM consumption cons " +
+            "INNER JOIN category cat ON cat.id = cons.category_id " +
+            "WHERE cons.ts >= ? " +
+            "AND cons.ts <= ? " +
+            "GROUP BY date ORDER BY date", [dateRow.start_month, dateRow.end_month], function (error, rows) {
+            reportData = rows;
+            res.json(reportData);
+        });
+    });
 
 });
 
