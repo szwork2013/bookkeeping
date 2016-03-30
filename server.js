@@ -53,7 +53,7 @@ app.post("/consumptions", function(req, res) {
     if (req.body.category_id && req.body.sum) {
         db.run('INSERT INTO consumption(category_id, sum, comment) VALUES(?, ?, ?)', [req.body.category_id, req.body.sum, req.body.comment], function () {
             var lastId = this.lastID;
-            db.get('SELECT consumption.id, category.name, consumption.sum, consumption.comment, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function (error, rows) {
+            db.get("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?", [lastId], function (error, rows) {
                 if (error) {
                     console.log(error);
                 }
@@ -70,7 +70,7 @@ app.post("/categories", function(req, res) {
     if (req.body.name) {
         db.run('INSERT INTO category(name) VALUES(?)', [req.body.name], function () {
             var lastId = this.lastID;
-            db.get('SELECT category.id, category.name, category.ts FROM category WHERE category.id = ?', [lastId], function (error, rows) {
+            db.get("SELECT category.id, category.name, strftime('%d.%m.%Y %H:%m', category.ts) as date FROM category WHERE category.id = ?", [lastId], function (error, rows) {
                 if (error) {
                     console.log(error);
                 }
@@ -84,7 +84,7 @@ app.post("/categories", function(req, res) {
 });
 
 app.get("/consumptions", function(req, res) {
-    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.comment, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
+    db.all("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY date DESC LIMIT 20", [], function (error, rows) {
         var consumptions = [];
         if (error) {
             console.log(error);
@@ -207,7 +207,7 @@ app.get("/monthly-table", function(req, res) {
             "INNER JOIN category cat ON cat.id = cons.category_id " +
             "WHERE cons.ts >= ? " +
             "AND cons.ts <= ? " +
-            "GROUP BY date ORDER BY date", [dateRow.start_month, dateRow.end_month], function (error, rows) {
+            "GROUP BY date ORDER BY date DESC", [dateRow.start_month, dateRow.end_month], function (error, rows) {
             reportData = rows;
             res.json(reportData);
         });

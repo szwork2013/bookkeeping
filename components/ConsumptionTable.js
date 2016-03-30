@@ -28,7 +28,7 @@ class ConsumptionTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarConsumption: {id: null, sum: null, comment: null, ts: null}
+            toolbarConsumption: {id: null, sum: null, comment: null, date: null}
         };
     }
 
@@ -43,7 +43,7 @@ class ConsumptionTable extends Component {
     handleToolbarClose(event) {
         this.setState({
             isToolbarOpen: false,
-            toolbarConsumption: {id: null, sum: null, ts: null}
+            toolbarConsumption: {id: null, sum: null, date: null}
         });
     };
 
@@ -103,7 +103,7 @@ class ConsumptionTable extends Component {
                                 <TableRowColumn>{consumption.name}</TableRowColumn>
                                 <TableRowColumn>{consumption.sum}</TableRowColumn>
                                 <TableRowColumn>{consumption.comment}</TableRowColumn>
-                                <TableRowColumn>{consumption.ts}</TableRowColumn>
+                                <TableRowColumn>{consumption.date}</TableRowColumn>
                             </TableRow>
                         ))}
                     </TableBody>
