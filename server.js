@@ -3,7 +3,6 @@ var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
 var config = require('./webpack.config.js');
-var xmlparser = require('express-xml-bodyparser');
 
 var bodyParser = require("body-parser");
 var app = new express();
@@ -21,8 +20,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(bodyParser.json());
-app.use(xmlparser());
+app.use(bodyParser.json());
 
 var cons = require('consolidate');
 
