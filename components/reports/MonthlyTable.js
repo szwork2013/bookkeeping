@@ -18,14 +18,23 @@ const MonthlyTable = React.createClass({
 
     getInitialState: function() {
         let tableRows = [];
-        let salary = 0;
+        let budgetPerDay;
+
+        $.ajax({
+            url: '/current-budget-per-day',
+            type: 'GET',
+            async: false,
+            success: function(data) {
+                budgetPerDay = data;
+            }
+        });
+
         $.ajax({
             url: '/monthly-table',
             type: 'GET',
             async: false,
             success: function(data) {
-                tableRows = data.rows;
-                salary = data.salary;
+                tableRows = data;
             }
         });
 
@@ -37,23 +46,25 @@ const MonthlyTable = React.createClass({
             selectable: false,
             multiSelectable: false,
             enableSelectAll: false,
-            salary: salary,
-            salaryPerDay: parseInt(salary / 30),
-            tableRows: tableRows
+            tableRows: tableRows,
+            budgetPerDay: budgetPerDay
         };
     },
 
     getRate: function(sum) {
-        if (this.state.salaryPerDay > sum) {
+        if (this.state.budgetPerDay > sum) {
             return (<FontIcon color={green500} className="material-icons">thumb_up</FontIcon>);
         }
-        else if (this.state.salaryPerDay < sum) {
+        else if (this.state.budgetPerDay < sum) {
             return (<FontIcon color={red500} className="material-icons">thumb_down</FontIcon>);
         }
     },
 
     render() {
-
+        if (!this.state.tableRows) {
+            return false;
+        }
+        console.log(this.state.tableRows);
         return (
             <Table
                 fixedHeader={this.state.fixedHeader}
@@ -63,7 +74,7 @@ const MonthlyTable = React.createClass({
                 <TableHeader enableSelectAll={this.state.enableSelectAll}>
                     <TableRow>
                         <TableHeaderColumn colSpan="4" tooltip="" style={{textAlign: 'center'}}>
-                            Total Salary: {this.state.salary}, Consumptions per day: {this.state.salaryPerDay}
+                            Consumptions per day: {this.state.budgetPerDay}
                         </TableHeaderColumn>
                     </TableRow>
                     <TableRow >

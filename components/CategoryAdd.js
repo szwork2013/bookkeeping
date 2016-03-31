@@ -26,7 +26,6 @@ class CategoryAdd extends Component {
     }
 
     render() {
-        const { categories } = this.props;
 
         return (
             <div style={{textAlign:'center', padding:40}}>

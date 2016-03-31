@@ -10,6 +10,7 @@ class Header extends Component {
                 <RaisedButton onClick={() => browserHistory.push('/')} label="Consumptions" style={{margin:12}} />
                 <RaisedButton onClick={() => browserHistory.push('/categories-page')} label="Categories" style={{margin:12}} />
                 <RaisedButton onClick={() => browserHistory.push('/reports-page')} label="Reports" style={{margin:12}} />
+                <RaisedButton onClick={() => browserHistory.push('/settings-page')} label="Settings" style={{margin:12}} />
             </AppBar>
         )
     }

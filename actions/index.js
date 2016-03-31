@@ -113,8 +113,7 @@ export function createCategory(name) {
         },
         success(data) {
             //@TODO: process errors
-            lastRow = data
-            console.log(data)
+            lastRow = data;
         }
     });
 
@@ -136,4 +135,35 @@ export function deleteCategory(category_id) {
     });
 
     return { type: types.DELETE_CATEGORY, category_id }
+}
+
+export function initBudget() {
+    let budget = {sum: null, date: null};
+    $.ajax({
+        url: '/current-budget',
+        type: 'GET',
+        async: false,
+        success: function(data) {
+            budget = data;
+        }
+    });
+
+    return { type: types.INIT_BUDGET, budget: budget }
+}
+
+export function setBudget(sum, comment) {
+    $.ajax({
+        url: '/budget',
+        type: 'POST',
+        async: false,
+        data: {
+            sum: sum,
+            comment: comment
+        },
+        success(data) {
+            //@TODO: process errors
+        }
+    });
+
+    return { type: types.SET_BUDGET, sum, comment}
 }

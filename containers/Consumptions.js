@@ -11,8 +11,8 @@ import $ from 'jquery';
 
 
 class Consumptions extends Component {
-    componentWillMount() {
 
+    componentWillMount() {
         this.props.dispatch(actions.initConsumptions());
         this.props.dispatch(actions.initCategories());
     }

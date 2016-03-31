@@ -8,10 +8,13 @@ import { combineReducers, createStore } from 'redux'
 
 import consumptions from './reducers/consupmptions'
 import categories from './reducers/categories'
+import settings from './reducers/settings'
+
 import App from './containers/App'
 import Reports from './containers/Reports'
 import Consumptions from './containers/Consumptions'
 import Categories from './containers/Categories'
+import Settings from './containers/Settings'
 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
@@ -19,6 +22,7 @@ injectTapEventPlugin();
 const reducers = combineReducers({
     consumptions,
     categories,
+    settings,
     routing: routerReducer
 });
 
@@ -33,6 +37,7 @@ render(
                 <IndexRoute component={Consumptions} />
                 <Route path="reports-page" component={Reports}/>
                 <Route path="categories-page" component={Categories}/>
+                <Route path="settings-page" component={Settings}/>
             </Route>
         </Router>
     </Provider>),

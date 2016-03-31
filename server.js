@@ -34,7 +34,7 @@ app.set('view engine', 'html');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('bookkeeping.db');
 
-app.get(['/', '/reports-page', '/categories-page'], function(req, res) {
+app.get(['/', '/reports-page', '/categories-page', '/settings-page'], function(req, res) {
     res.render('index')
 });
 
@@ -193,10 +193,10 @@ app.get("/monthly-chart", function(req, res) {
 });
 
 app.get("/monthly-table", function(req, res) {
-    var reportData = {rows:[], salary: 0};
+    var reportData = [];
 
     db.get("SELECT date('now', 'start of month') AS start_month, " +
-        "date('now','start of month','+1 month','-1 day') AS end_month, " +
+        "date('now','start of month','+1 month') AS end_month, " +
         "strftime('%m', 'now') as now_month, " +
         "strftime('%d', 'now') as now_day, " +
         "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function (error, dateRow) {
@@ -207,41 +207,51 @@ app.get("/monthly-table", function(req, res) {
             "FROM consumption cons " +
             "INNER JOIN category cat ON cat.id = cons.category_id " +
             "WHERE cons.ts >= ? " +
-            "AND cons.ts <= ? " +
+            "AND cons.ts < ? " +
             "GROUP BY date ORDER BY date DESC", [dateRow.start_month, dateRow.end_month], function (error, rows) {
-            reportData.rows = rows;
+            reportData = rows;
 
-            var request = require('request');
-            request('https://www.mtbank.by/currxml.php', function (error, response, body) {
-                var parseString = require('xml2js').parseString;
-
-                if (!error && response.statusCode == 200) {
-                    var currencies, code, codeTo, sale, purchase;
-                    parseString(body, function (err, result) {
-                        currencies = result.rates.currency;
-
-                        for (var i = 0; i < currencies.length; i++) {
-                            var item = currencies[i];
-                            code = item.code[0];
-                            codeTo = item.codeTo[0];
-                            if ((code === 'BYR' && codeTo === 'USD') || (code === 'USD' && codeTo === 'BYR')) {
-                                //sale = parseInt($(item).find('sale').text());
-                                purchase = parseInt(item.purchase);
-                                //salary = 800 * ((sale + purchase) / 2);
-                                reportData.salary = 800 * purchase;
-                                break;
-                            }
-                        }
-
-                        res.json(reportData);
-                    });
-                }
-            });
-
-
+            res.json(reportData);
         });
     });
 
+});
+
+app.get("/current-budget", function(req, res) {
+    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date from budget " +
+        "WHERE ts >= date('now', 'start of month') " +
+        "AND ts <  date('now','start of month','+1 month') " +
+        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+        if (error) {
+            console.log(error);
+        } else {
+            res.json(rows[0]);
+        }
+    });
+});
+
+app.get("/current-budget-per-day", function(req, res) {
+    db.all("SELECT COALESCE(sum, 0) / strftime('%d', date('now','start of month','+1 month', '-1 day')) as budget_per_day from budget " +
+        "WHERE ts >= date('now', 'start of month') " +
+        "AND ts < date('now','start of month','+1 month') " +
+        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+        if (error) {
+            console.log(error);
+        } else {
+            res.json(rows[0].budget_per_day);
+        }
+    });
+});
+
+app.post("/budget", function(req, res) {
+    if (req.body.sum) {
+        db.run('INSERT INTO budget(sum, comment) VALUES(?, ?)', [req.body.sum, req.body.comment], function () {
+            res.send(200);
+        });
+    }
+    else {
+        res.send(400);
+    }
 });
 
 app.listen(port, function(error) {
