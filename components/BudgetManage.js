@@ -16,30 +16,31 @@ class BudgetManage extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            comment: 'Salary'
-        };
+            comment: 'Salary',
+            sum: props.budget.sum,
+            date: props.budget.date
+        }
     }
 
     setBudget(event) {
-        this.props.setBudget(this.state.sum, this.state.comment);
+        let sum = document.getElementById('sum').value;
+        let comment = document.getElementById('comment').value;
+        this.props.setBudget(sum, comment);
+
+        this.setState({sum: sum, comment: comment});
     }
 
-    changeSum(event) {
-        this.setState({sum:event.target.value})
-    }
-
-    changeComment(event) {
-        this.setState({comment:event.target.value})
-    }
 
     render() {
-        const { budget, actions } = this.props;
+        const { actions } = this.props;
+
         return (
             <div style={{textAlign:'center', padding:40}}>
-                <h2>Budget for {budget.date}: {budget.sum}</h2>
-                <TextField inputStyle={{textAlign:'center'}} defaultValue={budget.sum} onChange={this.changeSum.bind(this)} style={{width:200}} hintText='Sum' />
-                <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.comment} onChange={this.changeComment.bind(this)} style={{width:400}} hintText='Comment' />
+                <h2>Budget for {this.state.date}: {this.state.sum}</h2>
+                <TextField id="sum" inputStyle={{textAlign:'center'}} defaultValue={this.state.sum} style={{width:200}} hintText='Sum' />
+                <TextField id="comment" inputStyle={{textAlign:'center'}} defaultValue={this.state.comment} style={{width:400}} hintText='Comment' />
                 <FloatingActionButton backgroundColor={blue500} style={{marginTop:20}} onClick={this.setBudget.bind(this)}>
                     <ContentAdd />
                 </FloatingActionButton>
@@ -51,6 +52,5 @@ class BudgetManage extends Component {
 BudgetManage.propTypes = {
     setBudget: PropTypes.func.isRequired
 };
-
 
 export default BudgetManage

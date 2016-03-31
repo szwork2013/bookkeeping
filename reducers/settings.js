@@ -9,10 +9,10 @@ export default function settings(state = initialState, action) {
             return {budget: action.budget};
 
         case SET_BUDGET:
-            let newState = Object.create(state);
-            newState.budget.sum = action.sum;
-            newState.budget.comment = '';
-            return newState;
+            return {
+                sum: action.sum,
+                comment: action.comment
+            };
 
         default:
             return state

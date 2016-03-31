@@ -11,22 +11,32 @@ import $ from 'jquery';
 
 class Settings extends Component {
 
-    componentWillMount() {
-        this.props.dispatch(actions.initBudget());
-        console.log(this.props);
+    constructor(props) {
+        super(props);
+
+        let budget;
+
+        $.ajax({
+            url: '/current-budget',
+            type: 'GET',
+            async: false,
+            success: function(data) {
+                budget = data;
+            }
+        });
+
+        this.state = {
+            budget: budget
+        }
     }
 
 
     render() {
-        const { budget, actions } = this.props;
-
-        if (!budget) {
-            return false;
-        }
+        const { actions } = this.props;
 
         return (
             <div>
-                <BudgetManage budget={budget} setBudget={actions.setBudget}/>
+                <BudgetManage budget={this.state.budget} setBudget={actions.setBudget}/>
             </div>
         )
 

@@ -137,20 +137,6 @@ export function deleteCategory(category_id) {
     return { type: types.DELETE_CATEGORY, category_id }
 }
 
-export function initBudget() {
-    let budget = {sum: null, date: null};
-    $.ajax({
-        url: '/current-budget',
-        type: 'GET',
-        async: false,
-        success: function(data) {
-            budget = data;
-        }
-    });
-
-    return { type: types.INIT_BUDGET, budget: budget }
-}
-
 export function setBudget(sum, comment) {
     $.ajax({
         url: '/budget',
