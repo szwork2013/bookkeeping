@@ -12,8 +12,14 @@ import $ from 'jquery';
 
 class Categories extends Component {
 
-    componentWillMount() {
-        this.props.dispatch(actions.initCategories());
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        const { dispatch } = this.props;
+
+        dispatch(actions.initCategories());
     }
 
     render() {

@@ -29,6 +29,22 @@ export function initCategories() {
     return { type: types.INIT_CATEGORIES, categories: categories }
 }
 
+export function initBudget() {
+    let budget;
+
+    $.ajax({
+        url: '/current-budget',
+        type: 'GET',
+        async: false,
+        success: function(data) {
+            budget = data;
+        }
+    });
+
+    return { type: types.INIT_BUDGET, budget: budget }
+}
+
+
 export function createConsumption(category_id, sum, comment) {
     let lastRow = {};
     $.ajax({
@@ -138,6 +154,8 @@ export function deleteCategory(category_id) {
 }
 
 export function setBudget(sum, comment) {
+    var lastRow = {};
+
     $.ajax({
         url: '/budget',
         type: 'POST',
@@ -147,9 +165,9 @@ export function setBudget(sum, comment) {
             comment: comment
         },
         success(data) {
-            //@TODO: process errors
+            lastRow = data
         }
     });
 
-    return { type: types.SET_BUDGET, sum, comment}
+    return { type: types.SET_BUDGET, lastRow}
 }

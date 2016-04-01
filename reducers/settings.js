@@ -9,10 +9,7 @@ export default function settings(state = initialState, action) {
             return {budget: action.budget};
 
         case SET_BUDGET:
-            return {
-                sum: action.sum,
-                comment: action.comment
-            };
+            return Object.assign({}, state, {budget:action.lastRow});
 
         default:
             return state

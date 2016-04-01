@@ -33,6 +33,7 @@ class ConsumptionTable extends Component {
     }
 
     handleToolbarOpen(rowIndex, cellIndex, event) {
+        console.log(this.props);
         this.setState({
             isToolbarOpen: true,
             toolbarAnchorEl: event.target,

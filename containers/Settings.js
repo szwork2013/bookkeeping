@@ -13,30 +13,20 @@ class Settings extends Component {
 
     constructor(props) {
         super(props);
-
-        let budget;
-
-        $.ajax({
-            url: '/current-budget',
-            type: 'GET',
-            async: false,
-            success: function(data) {
-                budget = data;
-            }
-        });
-
-        this.state = {
-            budget: budget
-        }
     }
 
+    componentDidMount() {
+        const { dispatch } = this.props;
+
+        dispatch(actions.initBudget());
+    }
 
     render() {
-        const { actions } = this.props;
+        const { budget, actions } = this.props;
 
         return (
             <div>
-                <BudgetManage budget={this.state.budget} setBudget={actions.setBudget}/>
+                <BudgetManage budget={budget} setBudget={actions.setBudget}/>
             </div>
         )
 

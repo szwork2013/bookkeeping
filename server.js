@@ -37,7 +37,7 @@ app.get(['/', '/reports-page', '/categories-page', '/settings-page'], function(r
 });
 
 app.get("/categories", function(req, res) {
-    db.all('SELECT * FROM category ORDER BY category.ts DESC', [], function (error, rows) {
+    db.all("SELECT category.id, category.name,  strftime('%d.%m.%Y %H:%m', category.ts) as date FROM category ORDER BY category.ts DESC", [], function (error, rows) {
         var categories = [];
         if (error) {
             console.log(error);
@@ -83,7 +83,7 @@ app.post("/categories", function(req, res) {
 });
 
 app.get("/consumptions", function(req, res) {
-    db.all("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY date DESC LIMIT 20", [], function (error, rows) {
+    db.all("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20", [], function (error, rows) {
         var consumptions = [];
         if (error) {
             console.log(error);
@@ -216,7 +216,7 @@ app.get("/monthly-table", function(req, res) {
 });
 
 app.get("/current-budget", function(req, res) {
-    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date from budget " +
+    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
         "WHERE ts >= date('now', 'start of month') " +
         "AND ts <  date('now','start of month','+1 month') " +
         "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
@@ -236,7 +236,13 @@ app.get("/current-budget-per-day", function(req, res) {
         if (error) {
             console.log(error);
         } else {
-            res.json(rows[0].budget_per_day);
+            console.log(rows);
+            if (rows) {
+                res.json(rows[0].budget_per_day);
+            }
+            else {
+                res.json(0);
+            }
         }
     });
 });
@@ -244,7 +250,13 @@ app.get("/current-budget-per-day", function(req, res) {
 app.post("/budget", function(req, res) {
     if (req.body.sum) {
         db.run('INSERT INTO budget(sum, comment) VALUES(?, ?)', [req.body.sum, req.body.comment], function () {
-            res.send(200);
+            var lastId = this.lastID;
+            db.get("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget WHERE budget.id = ?", [lastId], function (error, rows) {
+                if (error) {
+                    console.log(error);
+                }
+                res.json(rows)
+            });
         });
     }
     else {

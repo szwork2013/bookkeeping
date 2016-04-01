@@ -12,9 +12,15 @@ import $ from 'jquery';
 
 class Consumptions extends Component {
 
-    componentWillMount() {
-        this.props.dispatch(actions.initConsumptions());
-        this.props.dispatch(actions.initCategories());
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        const { dispatch } = this.props;
+
+        dispatch(actions.initConsumptions());
+        dispatch(actions.initCategories());
     }
 
     render() {
@@ -33,6 +39,8 @@ class Consumptions extends Component {
 }
 
 Consumptions.propTypes = {
+    consumptions: PropTypes.array.isRequired,
+    categories: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 };
 
