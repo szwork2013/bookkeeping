@@ -26,12 +26,12 @@ class CategoryAdd extends Component {
     }
 
     render() {
-        const { categories } = this.props;
 
         return (
-            <div style={{textAlign:'center'}}>
+            <div style={{textAlign:'center', padding:40}}>
                 <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.name} onChange={this.changeName.bind(this)} style={{width:300}} hintText='Name' />
-                <FloatingActionButton style={{marginLeft:20}} onClick={this.createCategory.bind(this)}>
+                <br />
+                <FloatingActionButton style={{marginTop:20}} onClick={this.createCategory.bind(this)}>
                     <ContentAdd addConsumption />
                 </FloatingActionButton>
             </div>

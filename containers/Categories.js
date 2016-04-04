@@ -6,14 +6,19 @@ import * as actions from '../actions'
 import CategoryAdd from '../components/CategoryAdd'
 import CategoryTable from '../components/CategoryTable'
 
-import { Router, Route, hashHistory } from 'react-router'
 import $ from 'jquery';
 
 
 class Categories extends Component {
 
-    componentWillMount() {
-        this.props.dispatch(actions.initCategories());
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        const { dispatch } = this.props;
+
+        dispatch(actions.initCategories());
     }
 
     render() {

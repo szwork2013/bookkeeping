@@ -28,7 +28,7 @@ class CategoryTable extends Component {
             deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
-            toolbarCategory: {id: null, name: null, ts: null}
+            toolbarCategory: {id: null, name: null, date: null}
         };
     }
 
@@ -58,11 +58,11 @@ class CategoryTable extends Component {
     }
 
     changeName(event) {
-        this.setState({toolbarCategory: {id: this.state.toolbarCategory.id, name: event.target.value, ts: this.state.toolbarCategory.ts}});
+        this.setState({toolbarCategory: {id: this.state.toolbarCategory.id, name: event.target.value, date: this.state.toolbarCategory.date}});
     }
 
     render() {
-        const { categories, actions } = this.props;
+        const { categories } = this.props;
 
         return (
             <div>
@@ -74,7 +74,7 @@ class CategoryTable extends Component {
                     multiSelectable={this.state.multiSelectable}>
                     <TableHeader enableSelectAll={this.state.enableSelectAll}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="3" tooltip="List of last 20 Categories" style={{textAlign: 'center'}}>
+                            <TableHeaderColumn colSpan="4" tooltip="List of last 20 Categories" style={{textAlign: 'center'}}>
                                 List of last 20 Categories
                             </TableHeaderColumn>
                         </TableRow>
@@ -92,7 +92,7 @@ class CategoryTable extends Component {
                             <TableRow key={index} selected={false}>
                                 <TableRowColumn>{item.id}</TableRowColumn>
                                 <TableRowColumn>{item.name}</TableRowColumn>
-                                <TableRowColumn>{item.ts}</TableRowColumn>
+                                <TableRowColumn>{item.date}</TableRowColumn>
                             </TableRow>
                         ))}
                     </TableBody>

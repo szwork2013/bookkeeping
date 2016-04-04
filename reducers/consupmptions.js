@@ -16,7 +16,7 @@ export default function consumptions(state = initialState, action) {
 
         case UPDATE_CONSUMPTION:
             return state.map(consumption =>
-                consumption.id === action.consumption_id ? Object.assign({}, consumption, { sum: action.sum }) : consumption
+                consumption.id === action.consumption_id ? Object.assign({}, consumption, { sum: action.sum, comment: action.comment }) : consumption
             );
 
         case DELETE_CONSUMPTION:

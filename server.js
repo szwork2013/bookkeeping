@@ -1,34 +1,50 @@
-var webpack = require('webpack');
-var webpackDevMiddleware = require('webpack-dev-middleware');
-var webpackHotMiddleware = require('webpack-hot-middleware');
-var config = require('./webpack.config.js');
-var bodyParser = require("body-parser");
-var app = new (require('express'))();
-var port = 8080;
+var express = require('express');
+var logger = require('morgan');
 
-var compiler = webpack(config)
-app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
-app.use(webpackHotMiddleware(compiler));
+var bodyParser = require("body-parser");
+var app = new express();
+var port;
+
+if (process.env.NODE_ENV === 'development') {
+
+    var webpack = require('webpack');
+    var webpackDevMiddleware = require('webpack-dev-middleware');
+    var webpackHotMiddleware = require('webpack-hot-middleware');
+    var config = require('./webpack.config.js');
+
+    var compiler = webpack(config);
+    app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }));
+    app.use(webpackHotMiddleware(compiler));
+    app.use(logger('common'));
+
+    port = 8080;
+}
+
+if (process.env.NODE_ENV === 'production') {
+    port = 8000;
+}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/static', express.static('static'));
 
 var cons = require('consolidate');
 
 // view engine setup
-app.engine('html', cons.swig)
+app.engine('html', cons.swig);
 //app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
+
 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('bookkeeping.db');
 
-app.get(['/', '/reports-page', '/categories-page'], function(req, res) {
+app.get(['/', '/reports-page', '/categories-page', '/settings-page'], function(req, res) {
     res.render('index')
 });
 
 app.get("/categories", function(req, res) {
-    db.all('SELECT * FROM category ORDER BY category.ts DESC', [], function (error, rows) {
+    db.all("SELECT category.id, category.name,  strftime('%d.%m.%Y %H:%m', category.ts) as date FROM category ORDER BY category.ts DESC", [], function (error, rows) {
         var categories = [];
         if (error) {
             console.log(error);
@@ -41,9 +57,9 @@ app.get("/categories", function(req, res) {
 
 app.post("/consumptions", function(req, res) {
     if (req.body.category_id && req.body.sum) {
-        db.run('INSERT INTO consumption(category_id, sum) VALUES(?, ?)', [req.body.category_id, req.body.sum], function () {
+        db.run('INSERT INTO consumption(category_id, sum, comment) VALUES(?, ?, ?)', [req.body.category_id, req.body.sum, req.body.comment], function () {
             var lastId = this.lastID;
-            db.get('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?', [lastId], function (error, rows) {
+            db.get("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?", [lastId], function (error, rows) {
                 if (error) {
                     console.log(error);
                 }
@@ -60,7 +76,7 @@ app.post("/categories", function(req, res) {
     if (req.body.name) {
         db.run('INSERT INTO category(name) VALUES(?)', [req.body.name], function () {
             var lastId = this.lastID;
-            db.get('SELECT category.id, category.name, category.ts FROM category WHERE category.id = ?', [lastId], function (error, rows) {
+            db.get("SELECT category.id, category.name, strftime('%d.%m.%Y %H:%m', category.ts) as date FROM category WHERE category.id = ?", [lastId], function (error, rows) {
                 if (error) {
                     console.log(error);
                 }
@@ -74,7 +90,7 @@ app.post("/categories", function(req, res) {
 });
 
 app.get("/consumptions", function(req, res) {
-    db.all('SELECT consumption.id, category.name, consumption.sum, consumption.ts FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20', [], function (error, rows) {
+    db.all("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id ORDER BY consumption.ts DESC LIMIT 20", [], function (error, rows) {
         var consumptions = [];
         if (error) {
             console.log(error);
@@ -98,7 +114,7 @@ app.delete("/consumptions", function(req, res) {
 
 app.put("/consumptions", function(req, res) {
     if (req.body.sum && req.body.id) {
-        db.run('UPDATE consumption SET sum = ? WHERE id = ?', [req.body.sum, req.body.id], function () {
+        db.run('UPDATE consumption SET sum = ?, comment = ? WHERE id = ?', [req.body.sum, req.body.comment, req.body.id], function () {
             res.json({status: true});
         });
     }
@@ -129,8 +145,8 @@ app.delete("/categories", function(req, res) {
     }
 });
 
-app.get("/report1-data", function(req, res) {
-    var reportData = {columns:[], rows: []};
+app.get("/monthly-chart", function(req, res) {
+    var reportData = {columns: [], rows: []};
 
     var columnsTmp = [];
     var rowsTmp = [];
@@ -138,7 +154,7 @@ app.get("/report1-data", function(req, res) {
         "date('now','start of month','+1 month','-1 day') AS end_month, " +
         "strftime('%m', 'now') as now_month, " +
         "strftime('%d', 'now') as now_day, " +
-        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function(error, dateRow) {
+        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function (error, dateRow) {
         db.all("SELECT strftime('%d.%m', cons.ts) AS date, " +
             "sum(cons.sum) AS sum, " +
             "cons.category_id AS cat_id, " +
@@ -148,7 +164,7 @@ app.get("/report1-data", function(req, res) {
             "WHERE cons.ts >= ? " +
             "AND cons.ts <= ? " +
             "GROUP BY date, cat_id ORDER BY date", [dateRow.start_month, dateRow.end_month], function (error, rows) {
-            rows.map(function(item) {
+            rows.map(function (item) {
                 if (columnsTmp.indexOf(item.cat_id) === -1) {
                     reportData.columns.push({label: item.cat_name, type: 'number'});
                     columnsTmp.push(item.cat_id);
@@ -166,11 +182,11 @@ app.get("/report1-data", function(req, res) {
                 day++;
             }
 
-            rowsTmp.map(function(rowTmp) {
-                rows.map(function(item) {
+            rowsTmp.map(function (rowTmp) {
+                rows.map(function (item) {
                     if (item.date == rowTmp[0]) {
                         var columnIndex = columnsTmp.indexOf(item.cat_id);
-                        rowTmp[columnIndex+1] = item.sum;
+                        rowTmp[columnIndex + 1] = item.sum;
                     }
                 });
             });
@@ -179,10 +195,80 @@ app.get("/report1-data", function(req, res) {
             res.json(reportData);
         });
     });
+});
 
+app.get("/monthly-table", function(req, res) {
+    var reportData = [];
 
+    db.get("SELECT date('now', 'start of month') AS start_month, " +
+        "date('now','start of month','+1 month') AS end_month, " +
+        "strftime('%m', 'now') as now_month, " +
+        "strftime('%d', 'now') as now_day, " +
+        "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount", [], function (error, dateRow) {
+        db.all("SELECT strftime('%d.%m', cons.ts) AS date, " +
+            "sum(cons.sum) AS sum, " +
+            "GROUP_CONCAT(cons.comment, '; ') as comments, " +
+            "GROUP_CONCAT(cat.name, '; ') AS categories " +
+            "FROM consumption cons " +
+            "INNER JOIN category cat ON cat.id = cons.category_id " +
+            "WHERE cons.ts >= ? " +
+            "AND cons.ts < ? " +
+            "GROUP BY date ORDER BY date DESC", [dateRow.start_month, dateRow.end_month], function (error, rows) {
+            reportData = rows;
 
+            res.json(reportData);
+        });
+    });
 
+});
+
+app.get("/current-budget", function(req, res) {
+    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
+        "WHERE ts >= date('now', 'start of month') " +
+        "AND ts <  date('now','start of month','+1 month') " +
+        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+        if (error) {
+            console.log(error);
+        } else {
+            res.json(rows[0]);
+        }
+    });
+});
+
+app.get("/current-budget-per-day", function(req, res) {
+    db.all("SELECT COALESCE(sum, 0) / strftime('%d', date('now','start of month','+1 month', '-1 day')) as budget_per_day from budget " +
+        "WHERE ts >= date('now', 'start of month') " +
+        "AND ts < date('now','start of month','+1 month') " +
+        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log(rows);
+            if (rows[0]) {
+                res.json(rows[0].budget_per_day);
+            }
+            else {
+                res.json(0);
+            }
+        }
+    });
+});
+
+app.post("/budget", function(req, res) {
+    if (req.body.sum) {
+        db.run('INSERT INTO budget(sum, comment) VALUES(?, ?)', [req.body.sum, req.body.comment], function () {
+            var lastId = this.lastID;
+            db.get("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget WHERE budget.id = ?", [lastId], function (error, rows) {
+                if (error) {
+                    console.log(error);
+                }
+                res.json(rows)
+            });
+        });
+    }
+    else {
+        res.send(400);
+    }
 });
 
 app.listen(port, function(error) {
