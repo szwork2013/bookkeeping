@@ -15,7 +15,6 @@ const MoneyLeft = React.createClass({
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch(actions.updateMoneyLeft());
-        console.log(this.props);
     },
 
     render() {
