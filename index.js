@@ -9,7 +9,8 @@ import logger from 'redux-logger'
 
 import consumptions from './reducers/consupmptions'
 import categories from './reducers/categories'
-import settings from './reducers/settings'
+import budget from './reducers/budget'
+import moneyLeft from './reducers/moneyLeft'
 
 import App from './containers/App'
 import Reports from './containers/Reports'
@@ -25,7 +26,8 @@ const middleware = process.env.NODE_ENV === 'production' ? [] : [logger()];
 const reducers = combineReducers({
     consumptions,
     categories,
-    settings,
+    budget,
+    moneyLeft,
     routing: routerReducer
 });
 

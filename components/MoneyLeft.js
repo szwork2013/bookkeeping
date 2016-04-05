@@ -12,16 +12,10 @@ import * as actions from '../actions';
 
 const MoneyLeft = React.createClass({
 
-    getDefaultProps() {
-        return {
-            moneyLeft: '0m'
-        }
-    },
-
     componentDidMount() {
         const { dispatch } = this.props;
-
         dispatch(actions.updateMoneyLeft());
+        console.log(this.props);
     },
 
     render() {

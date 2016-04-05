@@ -174,14 +174,14 @@ export function setBudget(sum, comment) {
 }
 
 export function updateMoneyLeft() {
-    var moneyLeft;
+    var moneyLeft = {};
 
     $.ajax({
         url: '/money-left',
         type: 'GET',
         async: false,
         success: function(data) {
-            moneyLeft = data;
+            moneyLeft = data.moneyLeft;
         }
     });
 

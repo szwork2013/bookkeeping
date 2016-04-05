@@ -242,7 +242,6 @@ app.get("/current-budget-per-day", function(req, res) {
         if (error) {
             console.log(error);
         } else {
-            console.log(rows);
             if (rows[0]) {
                 res.json(rows[0].budget_per_day);
             }
@@ -271,10 +270,12 @@ app.post("/budget", function(req, res) {
 });
 
 app.get("/money-left", function(req, res) {
-    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
-        "WHERE ts >= date('now', 'start of month') " +
-        "AND ts <  date('now','start of month','+1 month') " +
-        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+    db.all("SELECT COALESCE(ROUND(CAST(budget.sum - sum(consumption.sum) AS FLOAT) / CAST(1000000 AS FLOAT), 2), 0) || 'm' as moneyLeft from budget " +
+        "LEFT JOIN consumption on consumption.budget_id  = budget.id " +
+        "WHERE budget.ts >= date('now', 'start of month') " +
+        "AND budget.ts <  date('now','start of month','+1 month') " +
+        "ORDER BY budget.ts DESC " +
+        "LIMIT 1", [], function (error, rows) {
         if (error) {
             console.log(error);
         } else {

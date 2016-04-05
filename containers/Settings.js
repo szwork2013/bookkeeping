@@ -39,7 +39,7 @@ Settings.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        budget: state.settings.budget
+        budget: state.budget
     }
 }
 

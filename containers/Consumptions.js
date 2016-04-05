@@ -11,13 +11,13 @@ const Consumptions = React.createClass({
     componentDidMount() {
         const { dispatch } = this.props;
 
+        dispatch(actions.initBudget());
         dispatch(actions.initConsumptions());
         dispatch(actions.initCategories());
-        dispatch(actions.initBudget());
     },
 
     render() {
-        const { actions, consumptions, categories, budget } = this.props;
+        const { actions, consumptions, categories, budget  } = this.props;
 
         return (
             <div>
@@ -35,9 +35,9 @@ const Consumptions = React.createClass({
 
 Consumptions.propTypes = {
     consumptions: PropTypes.array.isRequired,
-    budget: PropTypes.object.isRequired,
     categories: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    budget: PropTypes.object.isRequired
 };
 
 
@@ -45,7 +45,7 @@ const mapStateToProps = (state) => {
     return {
         consumptions: state.consumptions,
         categories: state.categories,
-        budget: state.settings.budget
+        budget: state.budget
     }
 };
 
