@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import ConsumptionAdd from '../components/ConsumptionAdd'
 import ConsumptionTable from '../components/ConsumptionTable'
+import a from '../components/MoneyLeft';
 
 class Consumptions extends Component {
 
@@ -23,7 +24,7 @@ class Consumptions extends Component {
 
         return (
             <div>
-                <ConsumptionAdd createConsumption={actions.createConsumption} categories={categories}/>
+                <ConsumptionAdd updateMoneyLeft={''} createConsumption={actions.createConsumption} categories={categories}/>
                 <ConsumptionTable
                     consumptions={consumptions}
                     deleteConsumption={actions.deleteConsumption}

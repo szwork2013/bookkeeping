@@ -5,37 +5,19 @@ import NotificationsIcon from 'material-ui/lib/svg-icons/social/notifications';
 import {
     blue500, red500
 } from 'material-ui/lib/styles/colors';
-import $ from 'jquery';
-
+import MoneyLeftMixin from '../mixins/MoneyLeft';
 
 const MoneyLeft = React.createClass({
-
-    childContextTypes: {
-        moneyLeft: React.PropTypes.string
-    },
-
-    getChildContext() {
-        return {
-            moneyLeft: this.state.moneyLeft
-        }
-    },
+    mixins: [MoneyLeftMixin],
 
     getInitialState() {
         return {
-            moneyLeft: '0'
+            moneyLeft: '0m'
         }
     },
 
     componentDidMount() {
-        $.ajax({
-            url: '/money-left',
-            type: 'GET',
-            success: function(data) {
-                this.setState({
-                    moneyLeft: '10.2m'//moneyLeft
-                });
-            }.bind(this)
-        });
+        this.updateMoneyLeft()
     },
 
     render() {
@@ -50,10 +32,5 @@ const MoneyLeft = React.createClass({
         )
     }
 });
-/*
-MoneyLeft.propTypes = {
-    setBudget: PropTypes.func.isRequired
-};
-*/
 
 export default MoneyLeft

@@ -7,7 +7,7 @@ import ListItemIcon from 'material-ui/lib/svg-icons/action/list';
 import DeveloperBoardIcon from 'material-ui/lib/svg-icons/hardware/developer-board';
 import BuildIcon from 'material-ui/lib/svg-icons/action/build';
 import IconButton from 'material-ui/lib/icon-button';
-import MoneyLeft from '../components/MoneyLeft'
+import MoneyLeft from '../components/MoneyLeft';
 
 
 class Header extends Component {
