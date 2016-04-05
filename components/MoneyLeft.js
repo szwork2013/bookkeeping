@@ -2,35 +2,60 @@ import React, { Component, PropTypes } from 'react'
 import Badge from 'material-ui/lib/badge';
 import IconButton from 'material-ui/lib/icon-button';
 import NotificationsIcon from 'material-ui/lib/svg-icons/social/notifications';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import {
     blue500, red500
 } from 'material-ui/lib/styles/colors';
-import MoneyLeftMixin from '../mixins/MoneyLeft';
+import * as actions from '../actions';
+
 
 const MoneyLeft = React.createClass({
-    mixins: [MoneyLeftMixin],
 
-    getInitialState() {
+    getDefaultProps() {
         return {
             moneyLeft: '0m'
         }
     },
 
     componentDidMount() {
-        this.updateMoneyLeft()
+        const { dispatch } = this.props;
+
+        dispatch(actions.updateMoneyLeft());
     },
 
     render() {
+        const { moneyLeft, actions } = this.props;
 
         return (
             <div>
                 <Badge
                     badgeStyle={{width:50, height: 50, backgroundColor:blue500, color:'white', left: 10}}
-                    badgeContent={this.state.moneyLeft}>
+                    badgeContent={moneyLeft}>
                 </Badge>
             </div>
         )
     }
 });
 
-export default MoneyLeft
+MoneyLeft.propTypes = {
+    moneyLeft: PropTypes.string.isRequired
+};
+
+function mapStateToProps(state) {
+    return {
+        moneyLeft: state.moneyLeft
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+        dispatch: dispatch
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MoneyLeft)

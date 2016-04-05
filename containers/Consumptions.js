@@ -1,41 +1,41 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as actions from '../actions'
-import ConsumptionAdd from '../components/ConsumptionAdd'
-import ConsumptionTable from '../components/ConsumptionTable'
-import a from '../components/MoneyLeft';
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import ConsumptionAdd from '../components/ConsumptionAdd';
+import ConsumptionTable from '../components/ConsumptionTable';
 
-class Consumptions extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+const Consumptions = React.createClass({
 
     componentDidMount() {
         const { dispatch } = this.props;
 
         dispatch(actions.initConsumptions());
         dispatch(actions.initCategories());
-    }
+        dispatch(actions.initBudget());
+    },
 
     render() {
-        const { consumptions, categories, actions } = this.props;
+        const { actions, consumptions, categories, budget } = this.props;
 
         return (
             <div>
-                <ConsumptionAdd updateMoneyLeft={''} createConsumption={actions.createConsumption} categories={categories}/>
+                <ConsumptionAdd createConsumption={actions.createConsumption} updateMoneyLeft={actions.updateMoneyLeft} categories={categories} budget={budget} />
                 <ConsumptionTable
                     consumptions={consumptions}
+                    budget={budget}
+                    updateMoneyLeft={actions.updateMoneyLeft}
                     deleteConsumption={actions.deleteConsumption}
                     updateConsumption={actions.updateConsumption}/>
             </div>
         )
     }
-}
+});
 
 Consumptions.propTypes = {
     consumptions: PropTypes.array.isRequired,
+    budget: PropTypes.object.isRequired,
     categories: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired
 };
@@ -44,7 +44,8 @@ Consumptions.propTypes = {
 const mapStateToProps = (state) => {
     return {
         consumptions: state.consumptions,
-        categories: state.categories
+        categories: state.categories,
+        budget: state.settings.budget
     }
 };
 

@@ -4,7 +4,8 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, Route, browserHistory, IndexRoute } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import { combineReducers, createStore } from 'redux'
+import { combineReducers, createStore, applyMiddleware } from 'redux'
+import logger from 'redux-logger'
 
 import consumptions from './reducers/consupmptions'
 import categories from './reducers/categories'
@@ -19,6 +20,8 @@ import Settings from './containers/Settings'
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
 
+const middleware = process.env.NODE_ENV === 'production' ? [] : [logger()];
+
 const reducers = combineReducers({
     consumptions,
     categories,
@@ -26,7 +29,7 @@ const reducers = combineReducers({
     routing: routerReducer
 });
 
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(...middleware));
 
 const history = syncHistoryWithStore(browserHistory, store);
 

@@ -45,7 +45,7 @@ export function initBudget() {
 }
 
 
-export function createConsumption(category_id, sum, comment) {
+export function createConsumption(category_id, sum, comment, budget_id) {
     let lastRow = {};
     $.ajax({
         url: '/consumptions',
@@ -53,6 +53,7 @@ export function createConsumption(category_id, sum, comment) {
         async: false,
         data: {
             category_id: category_id,
+            budget_id: budget_id,
             sum: sum,
             comment: comment
         },
@@ -170,4 +171,19 @@ export function setBudget(sum, comment) {
     });
 
     return { type: types.SET_BUDGET, lastRow}
+}
+
+export function updateMoneyLeft() {
+    var moneyLeft;
+
+    $.ajax({
+        url: '/money-left',
+        type: 'GET',
+        async: false,
+        success: function(data) {
+            moneyLeft = data;
+        }
+    });
+
+    return { type: types.UPDATE_MONEY_LEFT, moneyLeft }
 }

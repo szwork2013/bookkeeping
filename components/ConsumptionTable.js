@@ -12,10 +12,8 @@ import Popover from 'material-ui/lib/popover/popover';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Divider from 'material-ui/lib/divider';
 
-import MoneyLeftMixin from '../mixins/MoneyLeft';
 
 const ConsumptionTable = React.createClass({
-    mixins: [MoneyLeftMixin],
 
     getInitialState() {
         return {
@@ -50,13 +48,13 @@ const ConsumptionTable = React.createClass({
 
     deleteConsumption() {
         this.props.deleteConsumption(this.state.toolbarConsumption.id);
-        this.updateMoneyLeft();
+        this.props.updateMoneyLeft();
         this.handleToolbarClose();
     },
 
     updateConsumption(event) {
         this.props.updateConsumption(this.state.toolbarConsumption.id, this.state.toolbarConsumption.sum, this.state.toolbarConsumption.comment);
-        this.updateMoneyLeft();
+        this.props.updateMoneyLeft();
         this.handleToolbarClose();
     },
 

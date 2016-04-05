@@ -55,8 +55,8 @@ app.get("/categories", function(req, res) {
 });
 
 app.post("/consumptions", function(req, res) {
-    if (req.body.category_id && req.body.sum) {
-        db.run('INSERT INTO consumption(category_id, sum, comment) VALUES(?, ?, ?)', [req.body.category_id, req.body.sum, req.body.comment], function () {
+    if (req.body.category_id && req.body.budget_id && req.body.sum) {
+        db.run('INSERT INTO consumption(category_id, budget_id, sum, comment) VALUES(?, ?, ?, ?)', [req.body.category_id, req.body.budget_id, req.body.sum, req.body.comment], function () {
             var lastId = this.lastID;
             db.get("SELECT consumption.id, category.name, consumption.sum, consumption.comment, strftime('%d.%m.%Y %H:%m', consumption.ts) as date FROM consumption INNER JOIN category ON consumption.category_id = category.id WHERE consumption.id = ?", [lastId], function (error, rows) {
                 if (error) {
@@ -222,7 +222,7 @@ app.get("/monthly-table", function(req, res) {
 });
 
 app.get("/current-budget", function(req, res) {
-    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
+    db.all("SELECT id, COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
         "WHERE ts >= date('now', 'start of month') " +
         "AND ts <  date('now','start of month','+1 month') " +
         "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {

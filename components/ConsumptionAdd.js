@@ -6,17 +6,17 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import TextField from 'material-ui/lib/text-field';
 import Paper from 'material-ui/lib/paper';
 import $ from 'jquery';
-import MoneyLeftMixin from '../mixins/MoneyLeft';
+import * as actions from '../actions';
 
 const ConsumptionAdd = React.createClass({
-    mixins: [MoneyLeftMixin],
 
     getInitialState() {
         return {
             category_id: null,
             sum: 100000,
             comment: '',
-            categories: []
+            categories: [],
+            budget_id: null
         };
     },
 
@@ -27,8 +27,9 @@ const ConsumptionAdd = React.createClass({
     },
 
     createConsumption(event) {
-        this.props.createConsumption(this.state.category_id, this.state.sum, this.state.comment);
-        this.updateMoneyLeft();
+        console.log(this.props);
+        this.props.createConsumption(this.state.category_id, this.state.sum, this.state.comment, this.props.budget.id);
+        this.props.updateMoneyLeft();
     },
 
     changeSum(event) {
