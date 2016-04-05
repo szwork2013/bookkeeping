@@ -6,7 +6,6 @@ var app = new express();
 var port;
 
 if (process.env.NODE_ENV === 'development') {
-
     var webpack = require('webpack');
     var webpackDevMiddleware = require('webpack-dev-middleware');
     var webpackHotMiddleware = require('webpack-hot-middleware');
@@ -269,6 +268,19 @@ app.post("/budget", function(req, res) {
     else {
         res.send(400);
     }
+});
+
+app.get("/money-left", function(req, res) {
+    db.all("SELECT COALESCE(sum, 0) as sum, strftime('%m.%Y', 'now') date, comment from budget " +
+        "WHERE ts >= date('now', 'start of month') " +
+        "AND ts <  date('now','start of month','+1 month') " +
+        "ORDER BY ts DESC LIMIT 1", [], function (error, rows) {
+        if (error) {
+            console.log(error);
+        } else {
+            res.json(rows[0]);
+        }
+    });
 });
 
 app.listen(port, function(error) {

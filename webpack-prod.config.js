@@ -17,6 +17,7 @@ module.exports = {
             'process.env.BABEL_ENV': '"production'
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.DedupePlugin(),
         new webpack.NoErrorsPlugin()
     ],
     module: {
