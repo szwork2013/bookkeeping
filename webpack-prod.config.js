@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 
-module.exports = {
+var config = {
     devtool: 'eval',
     entry: [
         './index'
@@ -13,8 +13,8 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"',
-            'process.env.BABEL_ENV': '"production'
+            'process.env.NODE_ENV': JSON.stringify('production'),
+            'process.env.BABEL_ENV': JSON.stringify('production')
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.DedupePlugin(),
@@ -36,3 +36,5 @@ module.exports = {
         ]
     }
 };
+
+module.exports = config;

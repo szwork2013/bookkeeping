@@ -28,6 +28,7 @@ const BudgetManage = React.createClass({
         let comment = document.getElementById('comment').value;
 
         this.props.setBudget(sum, comment);
+        this.props.updateMoneyLeft();
     },
 
     render() {

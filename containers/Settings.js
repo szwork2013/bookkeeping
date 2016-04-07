@@ -26,7 +26,7 @@ class Settings extends Component {
 
         return (
             <div>
-                <BudgetManage budget={budget} setBudget={actions.setBudget}/>
+                <BudgetManage budget={budget} setBudget={actions.setBudget} updateMoneyLeft={actions.updateMoneyLeft}/>
             </div>
         )
 

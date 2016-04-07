@@ -5,40 +5,19 @@ import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import MonthlyChart from '../components/reports/MonthlyChart';
 import MonthlyTable from '../components/reports/MonthlyTable';
-
-import $ from 'jquery';
+import MonthlyConsOnCat from '../components/reports/MonthlyByCategory';
 
 const Reports = React.createClass({
-
-    componentDidMount: function() {
-        ReactDom.render(<MonthlyChart />, document.getElementById('monthlyChart'));
-    },
-
-    changeTab: function(tab) {
-
-        ReactDom.render(tab.props.component, document.getElementById(tab.props.children.props.id));
-    },
 
     render: function() {
         return (
             <div>
-                <Tabs>
-                    <Tab
-                        component={<MonthlyChart />}
-                        onActive={this.changeTab}
-                        icon={<FontIcon className="material-icons">timeline</FontIcon>}
-                        label="Monthly Graph">
-                        <div id="monthlyChart"></div>
-                    </Tab>
-                    <Tab
-                        component={<MonthlyTable />}
-                        onActive={this.changeTab}
-                        icon={<FontIcon className="material-icons">dvr</FontIcon>}
-                        label="Monthly Table">
-                        <div id="monthlyTable"></div>
-                    </Tab>
-                </Tabs>
-
+                <h2 style={{textAlign:'center'}}>Daily Consumptions Chart</h2>
+                <MonthlyChart />
+                <h2 style={{textAlign:'center'}}>Daily Consumptions Table:</h2>
+                <MonthlyTable />
+                <h2 style={{textAlign:'center'}}>Consumptions on Categories</h2>
+                <MonthlyConsOnCat />
             </div>
         )
     }
