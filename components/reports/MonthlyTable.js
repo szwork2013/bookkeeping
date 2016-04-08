@@ -16,9 +16,16 @@ import $ from 'jquery';
 
 const MonthlyTable = React.createClass({
 
+    componentDidMount() {
+        this.setState({
+            budgetPerDayLeft: parseInt(this.context.store.getState().moneyLeft / this.state.month.days_left)
+        });
+    },
+
     getInitialState: function() {
         let tableRows = [];
-        let budgetPerDay;
+        let budgetPerDay = 0;
+        let month = {};
 
         $.ajax({
             url: '/current-budget-per-day',
@@ -38,16 +45,19 @@ const MonthlyTable = React.createClass({
             }
         });
 
+        $.ajax({
+            url: '/month',
+            type: 'GET',
+            async: false,
+            success: function(data) {
+                month = data;
+            }
+        });
+
         return {
-            fixedHeader: true,
-            fixedFooter: true,
-            stripedRows: false,
-            showRowHover: true,
-            selectable: false,
-            multiSelectable: false,
-            enableSelectAll: false,
             tableRows: tableRows,
-            budgetPerDay: budgetPerDay
+            budgetPerDay: budgetPerDay,
+            month: month
         };
     },
 
@@ -61,48 +71,44 @@ const MonthlyTable = React.createClass({
     },
 
     render() {
-        if (!this.state.tableRows) {
-            return false;
-        }
-
         return (
-            <Table
-                fixedHeader={this.state.fixedHeader}
-                fixedFooter={this.state.fixedFooter}
-                selectable={this.state.selectable}
-                multiSelectable={this.state.multiSelectable}>
-                <TableHeader enableSelectAll={this.state.enableSelectAll}>
-                    <TableRow>
-                        <TableHeaderColumn colSpan="4" tooltip="" style={{textAlign: 'center'}}>
-                            Consumptions per day: {this.state.budgetPerDay}
-                        </TableHeaderColumn>
-                    </TableRow>
-                    <TableRow >
-                        <TableHeaderColumn tooltip="Date">Date</TableHeaderColumn>
-                        <TableHeaderColumn tooltip="Categories">Categories</TableHeaderColumn>
-                        <TableHeaderColumn tooltip="Sum">Sum</TableHeaderColumn>
-                        <TableHeaderColumn tooltip="Comments">Comments</TableHeaderColumn>
-                    </TableRow>
-                </TableHeader>
-                <TableBody
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={this.state.stripedRows}>
-                    {this.state.tableRows.map((item, index) => (
-                        <TableRow key={index} selected={false}>
-                            <TableRowColumn>{item.date}</TableRowColumn>
-                            <TableRowColumn>{item.categories}</TableRowColumn>
-                            <TableRowColumn>
-                                {item.sum}&nbsp;
-                                {this.getRate(item.sum)}
-                            </TableRowColumn>
-                            <TableRowColumn>{item.comments}</TableRowColumn>
+            <div>
+                <h3 style={{textAlign:'center'}}>
+                    <strong>Consumptions per day: {this.state.budgetPerDay} -> {this.state.budgetPerDayLeft}</strong>
+                </h3>
+                <Table selectable={false}>
+                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                        <TableRow>
+                            <TableHeaderColumn tooltip="Date">Date</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Categories">Categories</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Sum">Sum</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Comments">Comments</TableHeaderColumn>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody
+                        displayRowCheckbox={false}
+                        showRowHover={true}>
+                        {this.state.tableRows.map((item, index) => (
+                            <TableRow key={index} selected={false}>
+                                <TableRowColumn>{item.date}</TableRowColumn>
+                                <TableRowColumn>{item.categories}</TableRowColumn>
+                                <TableRowColumn>
+                                    {item.sum}&nbsp;
+                                    {this.getRate(item.sum)}
+                                </TableRowColumn>
+                                <TableRowColumn>{item.comments}</TableRowColumn>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
         )
     }
 });
+
+MonthlyTable.contextTypes = {
+    store: React.PropTypes.object,
+    muiTheme: React.PropTypes.object
+};
 
 export default MonthlyTable

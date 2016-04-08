@@ -2,12 +2,20 @@ module.exports = (db) => {
     return {
         common: {
             moneyLeft: () => {
-                return "SELECT COALESCE(ROUND(CAST(budget.sum - sum(consumption.sum) AS FLOAT) / CAST(1000000 AS FLOAT), 2), 0) || 'm' as moneyLeft from budget " +
+                return "SELECT COALESCE(budget.sum - sum(consumption.sum), 0) as moneyLeft from budget " +
                     "LEFT JOIN consumption on consumption.budget_id  = budget.id " +
                     "WHERE budget.ts >= date('now', 'start of month') " +
                     "AND budget.ts <  date('now','start of month','+1 month') " +
                     "ORDER BY budget.ts DESC " +
                     "LIMIT 1";
+            },
+            monthInfo: () => {
+                return "SELECT date('now', 'start of month') AS start_month, " +
+                    "date('now','start of month','+1 month','-1 day') AS end_month, " +
+                    "strftime('%m', 'now') as now_month, " +
+                    "strftime('%d', 'now') as now_day, " +
+                    "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount, " +
+                    "strftime('%d', date('now','start of month','+1 month','-1 day')) - strftime('%d', 'now') as days_left";
             }
         },
         categories: {
@@ -45,14 +53,6 @@ module.exports = (db) => {
             }
         },
         reports : {
-            monthInfo: () => {
-                return "SELECT date('now', 'start of month') AS start_month, " +
-                    "date('now','start of month','+1 month','-1 day') AS end_month, " +
-                    "strftime('%m', 'now') as now_month, " +
-                    "strftime('%d', 'now') as now_day, " +
-                    "strftime('%d', date('now','start of month','+1 month','-1 day')) AS days_amount, " +
-                    "strftime('%d', date('now','start of month','+1 month','-1 day')) - strftime('%d', 'now') as days_left";
-            },
             monthlyChart: () => {
                 return "SELECT strftime('%d.%m', cons.ts) AS date, " +
                     "sum(cons.sum) AS sum, " +

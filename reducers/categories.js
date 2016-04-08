@@ -1,10 +1,13 @@
-import { CREATE_CATEGORY, UPDATE_CATEGORY, DELETE_CATEGORY } from '../constants/ActionTypes'
+import { INIT_CATEGORIES, CREATE_CATEGORY, UPDATE_CATEGORY, DELETE_CATEGORY } from '../constants/ActionTypes'
 import $ from 'jquery';
 
 let initialState = [];
 
-export default function consumptions(state = initialState, action) {
+export default function categories(state = initialState, action) {
     switch (action.type) {
+        case INIT_CATEGORIES:
+            return action.categories;
+
         case CREATE_CATEGORY:
             return [
                 action.lastRow,

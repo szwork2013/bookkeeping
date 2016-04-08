@@ -12,8 +12,8 @@ const Consumptions = React.createClass({
         const { dispatch } = this.props;
 
         dispatch(actions.initBudget());
-        dispatch(actions.initConsumptions());
         dispatch(actions.initCategories());
+        dispatch(actions.initConsumptions());
     },
 
     render() {

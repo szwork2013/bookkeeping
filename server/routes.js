@@ -112,7 +112,7 @@ module.exports = (app, db) => {
 
         var columnsTmp = [];
         var rowsTmp = [];
-        db.get(queries.reports.monthInfo(), [], function (error, dateRow) {
+        db.get(queries.common.monthInfo(), [], function (error, dateRow) {
             db.all(queries.reports.monthlyChart(), [dateRow.start_month, dateRow.end_month], function (error, rows) {
                 rows.map(function (item) {
                     if (columnsTmp.indexOf(item.cat_id) === -1) {
@@ -150,7 +150,7 @@ module.exports = (app, db) => {
     app.get("/monthly-table", function (req, res) {
         var reportData = [];
 
-        db.get(queries.reports.monthInfo(), [], function (error, dateRow) {
+        db.get(queries.common.monthInfo(), [], function (error, dateRow) {
             db.all(queries.reports.monthlyTable(), [dateRow.start_month, dateRow.end_month], function (error, rows) {
                 reportData = rows;
 
@@ -213,6 +213,16 @@ module.exports = (app, db) => {
 
     app.get("/money-left", function (req, res) {
         db.all(queries.common.moneyLeft(), [], function (error, rows) {
+            if (error) {
+                console.log(error);
+            } else {
+                res.json(rows[0]);
+            }
+        });
+    });
+
+    app.get("/month", function (req, res) {
+        db.all(queries.common.monthInfo(), [], function (error, rows) {
             if (error) {
                 console.log(error);
             } else {

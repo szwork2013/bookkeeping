@@ -24,7 +24,7 @@ const MoneyLeft = React.createClass({
             <div>
                 <Badge
                     badgeStyle={{width:50, height: 50, backgroundColor:blue500, color:'white', left: 10}}
-                    badgeContent={moneyLeft}>
+                    badgeContent={parseFloat(moneyLeft / 1000000).toFixed(2) + 'm'}>
                 </Badge>
             </div>
         )
@@ -32,7 +32,7 @@ const MoneyLeft = React.createClass({
 });
 
 MoneyLeft.propTypes = {
-    moneyLeft: PropTypes.string.isRequired
+    moneyLeft: PropTypes.number.isRequired
 };
 
 function mapStateToProps(state) {

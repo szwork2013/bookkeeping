@@ -14,9 +14,7 @@ const ConsumptionAdd = React.createClass({
         return {
             category_id: null,
             sum: 100000,
-            comment: '',
-            categories: [],
-            budget_id: null
+            comment: ''
         };
     },
 
@@ -27,7 +25,6 @@ const ConsumptionAdd = React.createClass({
     },
 
     createConsumption(event) {
-        console.log(this.props);
         this.props.createConsumption(this.state.category_id, this.state.sum, this.state.comment, this.props.budget.id);
         this.props.updateMoneyLeft();
     },

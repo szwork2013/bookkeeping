@@ -5,26 +5,16 @@ import TableRow from 'material-ui/lib/table/table-row';
 import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
-import TableFooter from 'material-ui/lib/table/table-footer';
 import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 import Popover from 'material-ui/lib/popover/popover';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Divider from 'material-ui/lib/divider';
 
-
 const ConsumptionTable = React.createClass({
 
     getInitialState() {
         return {
-            fixedHeader: true,
-            fixedFooter: true,
-            stripedRows: true,
-            showRowHover: true,
-            selectable: true,
-            multiSelectable: false,
-            enableSelectAll: false,
-            deselectOnClickaway: false,
             isToolbarOpen: false,
             toolbarAnchorEl: null,
             toolbarConsumption: {id: null, sum: null, comment: null, date: null}
@@ -74,19 +64,14 @@ const ConsumptionTable = React.createClass({
         const { consumptions } = this.props;
         return (
             <div>
+                <h3 style={{textAlign:'center'}}>
+                    List of last 20 Consumptions
+                </h3>
                 <Table
                     onCellClick={this.handleToolbarOpen}
-                    fixedHeader={this.state.fixedHeader}
-                    fixedFooter={this.state.fixedFooter}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable}>
-                    <TableHeader enableSelectAll={this.state.enableSelectAll}>
+                    selectable={false}>
+                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow>
-                            <TableHeaderColumn colSpan="5" tooltip="List of last 20 Consumptions" style={{textAlign: 'right'}}>
-                                List of last 20 Consumptions
-                            </TableHeaderColumn>
-                        </TableRow>
-                        <TableRow >
                             <TableHeaderColumn tooltip="The ID">ID</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
                             <TableHeaderColumn tooltip="The Sum">Sum</TableHeaderColumn>
@@ -95,9 +80,9 @@ const ConsumptionTable = React.createClass({
                         </TableRow>
                     </TableHeader>
                     <TableBody
-                        deselectOnClickaway={this.state.deselectOnClickaway}
-                        showRowHover={this.state.showRowHover}
-                        stripedRows={this.state.stripedRows}>
+                        displayRowCheckbox={false}
+                        showRowHover={true}
+                        stripedRows={true}>
                         {consumptions.map((consumption, index) => (
                             <TableRow key={index} selected={false}>
                                 <TableRowColumn>{consumption.id}</TableRowColumn>
@@ -119,9 +104,9 @@ const ConsumptionTable = React.createClass({
                     <p style={{fontSize:11, textAlign:'center'}}>Consumption: ID {this.state.toolbarConsumption.id}</p>
                     <Divider />
                     <div style={{textAlign: 'center'}}>
-                        <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.sum} onChange={this.changeSum} hintText='Sum' style={{width:100}}/>
+                        <TextField inputStyle={{textAlign:'center'}} value={this.state.toolbarConsumption.sum} onChange={this.changeSum} hintText='Sum' style={{width:100}}/>
                         <br />
-                        <TextField inputStyle={{textAlign:'center'}} defaultValue={this.state.toolbarConsumption.comment} onChange={this.changeComment} hintText='Comment' style={{width:100}}/>
+                        <TextField inputStyle={{textAlign:'center'}} value={this.state.toolbarConsumption.comment} onChange={this.changeComment} hintText='Comment' style={{width:100}}/>
                     </div>
                     <div>
                         <RaisedButton label="Edit" secondary={true} style={{margin:12}} onClick={this.updateConsumption} />
