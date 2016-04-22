@@ -23,8 +23,8 @@ const MonthlyChart = React.createClass({
             chart:{
                 columns : [{label:'Date', type:'string'}].concat(columns),
                 rows: rows,
-                height: 500,
-                options: {curveType: 'function', title: "Your Consumptions", hAxis: {title: 'Day'}, vAxis: {title: 'Sum'}},
+                height: 600,
+                options: {explorer: {keepInBounds: true}, title: "Your Consumptions", hAxis: {title: 'Day'}, vAxis: {title: 'Sum'}},
                 chartType: "LineChart",
                 div_id: "chart"
             }

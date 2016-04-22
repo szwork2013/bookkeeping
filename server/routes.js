@@ -132,14 +132,20 @@ module.exports = (app, db) => {
                     day++;
                 }
 
-                rowsTmp.map(function (rowTmp) {
-                    rows.map(function (item) {
+                var categorySum = Array.apply(null, Array(columnsTmp.length)).map(Number.prototype.valueOf, 0);
+                rows.map(function (item) {
+                    rowsTmp.map(function (rowTmp) {
+                        var columnIndex = columnsTmp.indexOf(item.cat_id);
                         if (item.date == rowTmp[0]) {
-                            var columnIndex = columnsTmp.indexOf(item.cat_id);
-                            rowTmp[columnIndex + 1] = item.sum;
+                            categorySum[columnIndex] += item.sum;
+                            rowTmp[columnIndex + 1] = categorySum[columnIndex];
+                        }
+                        else {
+                            rowTmp[columnIndex + 1] = categorySum[columnIndex];
                         }
                     });
                 });
+                console.log(categorySum[0]);
                 reportData.rows = rowsTmp;
 
                 res.json(reportData);
